@@ -2,7 +2,7 @@ from random import randint
 import pygame_gui as pg_gui
 import pygame as pg
 
-# я люблю пуки и каки
+# я люблю пуки и каки, ddddd
 pg.init()
 
 sc = pg.display.set_mode((620, 820))
