@@ -1,7 +1,7 @@
 from random import randint
 import pygame as pg
 import sys
-
+#пенис в попе
 pg.init()
 sc = pg.display.set_mode((620, 620))
 
