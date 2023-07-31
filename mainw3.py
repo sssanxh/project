@@ -2,10 +2,10 @@ from random import randint
 import pygame_gui as pg_gui
 import pygame as pg
 
-# я люблю пуки и каки, ddddd аааааа
+# Люблю какать. Насрал.
 pg.init()
 
-sc = pg.display.set_mode((620, 820))
+sc = pg.display.set_mode((620, 620))
 
 pg.display.set_caption("КАЛЬЯННЫЙ ГОНЩИК: ВОЗМЕЗДИЕ")
 
@@ -15,7 +15,7 @@ GREEN_APPLES = ('sprites/Green_Apple/1.png', 'sprites/Green_Apple/2.png',
 GREEN_APPLES_NEW = []
 for i in GREEN_APPLES:
     image = pg.image.load(i)
-    scaled_image = pg.transform.scale(image, (200, 200))
+    scaled_image = pg.transform.scale(image, (100, 100))
     GREEN_APPLES_NEW.append(scaled_image)
 
 
@@ -35,7 +35,7 @@ HOOKAH_RIGHT = pg.transform.scale(RIGHT, (200, 200))
 
 
 bg = pg.image.load('bg.png')
-bg = pg.transform.scale(bg, (620, 820))
+bg = pg.transform.scale(bg, (620, 620))
 
 bg_music1 = pg.mixer.Sound('bg_lvl1.mp3')
 menu_music = pg.mixer.Sound('menu.mp3')
@@ -47,7 +47,7 @@ clock = pg.time.Clock()
 
 image_size = (200, 200)
 x = 287
-y = 750
+y = 600
 width = 30
 height = 30
 speed = 2
@@ -79,7 +79,7 @@ def drawWindow():
     pg.display.update()
 
 #инциализуруем переменные для pg_gui и вводим кнопки нашего меню
-manager = pg_gui.UIManager((620,820))
+manager = pg_gui.UIManager((620,620))
 
 hello_button = pg_gui.elements.UIButton(relative_rect=pg.Rect((0, 100), (200, 50)),
                                              text='НАЧАТЬ БЕЗУМИЕ',
@@ -169,7 +169,7 @@ while run:
         stay = True
     if keys[pg.K_w] and y > 5:
         y -= speed
-    if keys[pg.K_s] and y < 800 - height - 5:
+    if keys[pg.K_s] and y < 600 - height - 5:
         y += speed
 
 
