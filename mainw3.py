@@ -4,6 +4,7 @@ import pygame as pg
 
 # Люблю какать. Насрал.
 pg.init()
+pg.time.set_timer(pg.USEREVENT, 1000) #ЧАСТОТА ПОЯВЛЕНИЯ ЯБЛОК
 
 sc = pg.display.set_mode((620, 620))
 
@@ -56,6 +57,7 @@ left = False
 right = False
 stay = True
 animCount = 0
+animCount2 = 0
 
 
 
@@ -73,53 +75,50 @@ def drawWindow():
             sc.blit(HOOKAH_LEFT, (x, y))
         elif right:
             sc.blit(HOOKAH_RIGHT, (x, y))
-
     apples.draw(sc)
-
     pg.display.update()
 
 #инциализуруем переменные для pg_gui и вводим кнопки нашего меню
-manager = pg_gui.UIManager((620,620))
-
-hello_button = pg_gui.elements.UIButton(relative_rect=pg.Rect((0, 100), (200, 50)),
-                                             text='НАЧАТЬ БЕЗУМИЕ',
-                                             manager=manager)
-exit_button = pg_gui.elements.UIButton(relative_rect=pg.Rect((0, 300), (200, 50)),
-                                             text='Я БОЮСЬ',
-                                             manager=manager)
-
-#цикл меню, который работает через pygame_gui, при нажатии кнопки hello_button запускает игровой цикл
-
-logo = pg.image.load('logo.png')
-logo = pg.transform.scale(logo, (500,500))
-sc.blit(logo, (65,120))
-pg.display.update()
-
-pg.time.delay(1500)
-
-
-menu = True
-while menu:
-    time_delta = clock.tick(60) / 1000.0
-    for i in pg.event.get():
-        if i.type == pg.QUIT:
-            menu = False
-        if i.type == pg_gui.UI_BUTTON_PRESSED:
-            if i.ui_element == hello_button:
-                run = True
-                menu = False
-                menu_music.stop()
-                bg_music1.play(-1)
-            if i.ui_element == exit_button:
-                menu = False
-                run = False
-        manager.process_events(i)
-    manager.update(time_delta)
-    manager.draw_ui(sc)
-    pg.display.update()
+# manager = pg_gui.UIManager((620,620))
+#
+# hello_button = pg_gui.elements.UIButton(relative_rect=pg.Rect((0, 100), (200, 50)),
+#                                              text='НАЧАТЬ БЕЗУМИЕ',
+#                                              manager=manager)
+# exit_button = pg_gui.elements.UIButton(relative_rect=pg.Rect((0, 300), (200, 50)),
+#                                              text='Я БОЮСЬ',
+#                                              manager=manager)
+#
+# # цикл меню, который работает через pygame_gui, при нажатии кнопки hello_button запускает игровой цикл
+#
+# logo = pg.image.load('logo.png')
+# logo = pg.transform.scale(logo, (500,500))
+# sc.blit(logo, (65,120))
+# pg.display.update()
+#
+# pg.time.delay(1500)
+#
+#
+# menu = True
+# while menu:
+#     time_delta = clock.tick(60) / 1000.0
+#     for i in pg.event.get():
+#         if i.type == pg.QUIT:
+#             menu = False
+#         if i.type == pg_gui.UI_BUTTON_PRESSED:
+#             if i.ui_element == hello_button:
+#                 run = True
+#                 menu = False
+#                 menu_music.stop()
+#                 bg_music1.play(-1)
+#             if i.ui_element == exit_button:
+#                 menu = False
+#                 run = False
+#         manager.process_events(i)
+#     manager.update(time_delta)
+#     manager.draw_ui(sc)
+#     pg.display.update()
 
 class Apple(pg.sprite.Sprite):
-
     def __init__(self, x, surf, group):
         pg.sprite.Sprite.__init__(self)
         self.image = surf
@@ -127,30 +126,28 @@ class Apple(pg.sprite.Sprite):
         # добавляем в группу
         self.add(group)
         # у машин будет разная скорость
-        self.speed = randint(1,3)
+        self.speed = randint(1,4)
 
     def update(self):
-        if self.rect.y < 1:
+        if self.rect.y < 620:
             self.rect.y += self.speed
         else:
             # теперь не перебрасываем вверх, а удаляем из всех групп
             self.kill()
 
 
+
 apples = pg.sprite.Group()
 
-# добавляем первую машину,
-# которая появляется сразу
-Apple(randint(100, 540), GREEN_APPLES_NEW[randint(0, 5)], apples)
 
-
-
+run = True
+#главный цикл
 while run:
     for i in pg.event.get():
         if i.type == pg.QUIT:
             run = False
         elif i.type == pg.USEREVENT:
-            Apple(randint(100,540)), GREEN_APPLES_NEW[randint(0,5),apples]
+            Apple(randint(100,520), GREEN_APPLES_NEW[randint(0,5)],apples)
 
     keys = pg.key.get_pressed()
     if keys[pg.K_a] and x > 5:
@@ -174,7 +171,6 @@ while run:
     if keys[pg.K_s] and y < 600 - height - 5:
         y += speed
 
-    apples.draw(sc)
     drawWindow()
     pg.display.update()
     pg.time.delay(0)
@@ -183,5 +179,6 @@ while run:
     pg.mixer.music.play(loops=-1)
     pg.mixer.music.set_volume(0.2)
     clock.tick(60)
+    apples.update()
 
 pg.quit()
