@@ -127,10 +127,10 @@ class Apple(pg.sprite.Sprite):
         # добавляем в группу
         self.add(group)
         # у машин будет разная скорость
-        self.speed = 1
+        self.speed = randint(1,3)
 
     def update(self):
-        if self.rect.y < 620:
+        if self.rect.y < 1:
             self.rect.y += self.speed
         else:
             # теперь не перебрасываем вверх, а удаляем из всех групп
@@ -141,7 +141,7 @@ apples = pg.sprite.Group()
 
 # добавляем первую машину,
 # которая появляется сразу
-Apple(randint(100, 540), GREEN_APPLES_NEW[randint(0, 1)], apples)
+Apple(randint(100, 540), GREEN_APPLES_NEW[randint(0, 5)], apples)
 
 
 
@@ -149,6 +149,8 @@ while run:
     for i in pg.event.get():
         if i.type == pg.QUIT:
             run = False
+        elif i.type == pg.USEREVENT:
+            Apple(randint(100,540)), GREEN_APPLES_NEW[randint(0,5),apples]
 
     keys = pg.key.get_pressed()
     if keys[pg.K_a] and x > 5:
@@ -172,8 +174,10 @@ while run:
     if keys[pg.K_s] and y < 600 - height - 5:
         y += speed
 
-
+    apples.draw(sc)
     drawWindow()
+    pg.display.update()
+    pg.time.delay(0)
     pg.mixer.init()
     pg.mixer.music.load('bg_lvl1.mp3')
     pg.mixer.music.play(loops=-1)
