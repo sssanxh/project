@@ -1,5 +1,7 @@
+from random import randint
 import pygame_gui as pg_gui
 import pygame as pg
+
 # я люблю пуки и каки
 pg.init()
 
@@ -7,18 +9,30 @@ sc = pg.display.set_mode((620, 820))
 
 pg.display.set_caption("КАЛЬЯННЫЙ ГОНЩИК: ВОЗМЕЗДИЕ")
 
-GREEN_APPLES = [pg.image.load('sprites/Green_Apple/1.png'), pg.image.load('sprites/Green_Apple/2.png'),
-                pg.image.load('sprites/Green_Apple/3.png'), pg.image.load('sprites/Green_Apple/4.png'),
-                pg.image.load('sprites/Green_Apple/5.png'), pg.image.load('sprites/Green_Apple/6.png')]
+GREEN_APPLES = ('sprites/Green_Apple/1.png', 'sprites/Green_Apple/2.png',
+                'sprites/Green_Apple/3.png', 'sprites/Green_Apple/4.png',
+                'sprites/Green_Apple/5.png', 'sprites/Green_Apple/6.png')
+GREEN_APPLES_NEW = []
+for i in GREEN_APPLES:
+    image = pg.image.load(i)
+    scaled_image = pg.transform.scale(image, (200, 200))
+    GREEN_APPLES_NEW.append(scaled_image)
 
-HOOKAH = [pg.image.load('sprites/Hookah/1.png'), pg.image.load('sprites/Hookah/2.png'),
-          pg.image.load('sprites/Hookah/3.png'), pg.image.load('sprites/Hookah/4.png'),
-          pg.image.load('sprites/Hookah/5.png'), pg.image.load('sprites/Hookah/6.png'),
-          pg.image.load('sprites/Hookah/7.png')]
 
-HOOKAH_LEFT = pg.image.load('sprites/Hookah/left.png')
+HOOKAH = ('sprites/Hookah/1.png', 'sprites/Hookah/2.png', 'sprites/Hookah/3.png',
+          'sprites/Hookah/4.png', 'sprites/Hookah/5.png', 'sprites/Hookah/6.png',
+          'sprites/Hookah/7.png')
+HOOKAH_NEW = []
+for i in HOOKAH:
+    image = pg.image.load(i)
+    scaled_image = pg.transform.scale(image, (200, 200))
+    HOOKAH_NEW.append(scaled_image)
 
-HOOKAH_RIGHT = pg.image.load('sprites/Hookah/right.png')
+LEFT = pg.image.load('sprites/Hookah/left.png')
+RIGHT = pg.image.load('sprites/Hookah/right.png')
+HOOKAH_LEFT = pg.transform.scale(LEFT, (200, 200))
+HOOKAH_RIGHT = pg.transform.scale(RIGHT, (200, 200))
+
 
 bg = pg.image.load('bg.png')
 bg = pg.transform.scale(bg, (620, 820))
@@ -52,13 +66,15 @@ def drawWindow():
     if animCount + 1 >= 30:
         animCount = 0
     if stay:
-        sc.blit(HOOKAH[animCount // 5], (x, y))
+        sc.blit(HOOKAH_NEW[animCount // 5], (x, y))
         animCount += 1
     else:
         if left:
             sc.blit(HOOKAH_LEFT, (x, y))
         elif right:
             sc.blit(HOOKAH_RIGHT, (x, y))
+
+    apples.draw(sc)
 
     pg.display.update()
 
@@ -101,6 +117,31 @@ while menu:
     manager.update(time_delta)
     manager.draw_ui(sc)
     pg.display.update()
+
+class Apple(pg.sprite.Sprite):
+
+    def __init__(self, x, surf, group):
+        pg.sprite.Sprite.__init__(self)
+        self.image = surf
+        self.rect = self.image.get_rect(center=(x, 0))
+        # добавляем в группу
+        self.add(group)
+        # у машин будет разная скорость
+        self.speed = 1
+
+    def update(self):
+        if self.rect.y < 620:
+            self.rect.y += self.speed
+        else:
+            # теперь не перебрасываем вверх, а удаляем из всех групп
+            self.kill()
+
+
+apples = pg.sprite.Group()
+
+# добавляем первую машину,
+# которая появляется сразу
+Apple(randint(100, 540), GREEN_APPLES_NEW[randint(0, 1)], apples)
 
 
 
