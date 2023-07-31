@@ -1,6 +1,6 @@
 import pygame_gui as pg_gui
 import pygame as pg
-# я люблю пуки
+# я люблю пуки и каки
 pg.init()
 
 sc = pg.display.set_mode((620, 820))
