@@ -48,7 +48,7 @@ clock = pg.time.Clock()
 
 image_size = (200, 200)
 x = 287
-y = 600
+y = 500
 width = 30
 height = 30
 speed = 2
@@ -163,7 +163,7 @@ while run:
         stay = False
         x -= speed
         animCount = 0
-    elif keys[pg.K_d] and x < 620 - width - 5:
+    elif keys[pg.K_d] and x < 500 - width - 5:
         left = False
         right = True
         stay = False
