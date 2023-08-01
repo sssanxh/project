@@ -1,5 +1,4 @@
 from random import randint
-from random import randrange
 import pygame_gui as pg_gui
 import pygame as pg
 
@@ -7,27 +6,12 @@ pg.init()
 pg.time.set_timer(pg.USEREVENT, 10000)  # ЧАСТОТА ПОЯВЛЕНИЯ ЯБЛОК
 
 sc = pg.display.set_mode((620, 620))
-road = (103, 309, 515)
+
 pg.display.set_caption("КАЛЬЯННЫЙ ГОНЩИК: ВОЗМЕЗДИЕ")
 
-BAD_APPLES = ('sprites/Bad_Apple/1.png', 'sprites/Bad_Apple/2.png')
-BAD_APPLES_NEW = []
-for i in BAD_APPLES:
-    image = pg.image.load(i)
-    scaled_image = pg.transform.scale(image, (150, 150))
-    BAD_APPLES_NEW.append(scaled_image)
-
 green_apple = pg.image.load('sprites/Green_Apple/1.png')
+green_apple = pg.transform.scale(green_apple, (100, 100))
 green_apple_y = 0
-
-GREEN_APPLES = ('sprites/Green_Apple/1.png', 'sprites/Green_Apple/2.png',
-                'sprites/Green_Apple/3.png', 'sprites/Green_Apple/4.png',
-                'sprites/Green_Apple/5.png', 'sprites/Green_Apple/6.png')
-GREEN_APPLES_NEW = []
-for i in GREEN_APPLES:
-    image = pg.image.load(i)
-    scaled_image = pg.transform.scale(image, (150, 150))
-    GREEN_APPLES_NEW.append(scaled_image)
 
 HOOKAH = ('sprites/Hookah/1.png', 'sprites/Hookah/2.png', 'sprites/Hookah/3.png',
           'sprites/Hookah/4.png', 'sprites/Hookah/5.png', 'sprites/Hookah/6.png',
@@ -43,12 +27,7 @@ RIGHT = pg.image.load('sprites/Hookah/right.png')
 HOOKAH_LEFT = pg.transform.scale(LEFT, (200, 200))
 HOOKAH_RIGHT = pg.transform.scale(RIGHT, (200, 200))
 
-
-
-
-"""ВРЕМЕННО ПОСТАВИЛ BG2!!!"""
-bg = pg.image.load('bg2.jpg')
-
+bg = pg.image.load('bg.png')
 bg = pg.transform.scale(bg, (620, 620))
 logo = pg.image.load('logo.png')
 logo = pg.transform.scale(logo, (500, 500))
@@ -77,8 +56,10 @@ stay = True
 green_apple_stay = True
 animCount = 0
 animCount2 = 0
-run = None
+green_apple_timer = pg.USEREVENT + 1
+pg.time.set_timer(green_apple_timer, 1000)
 
+run = None
 
 def drawWindow():
     global animCount
@@ -99,17 +80,13 @@ def drawWindow():
             sc.blit(HOOKAH_RIGHT, (x, y))
 
     HOOKAH_rect = pg.Rect(x + 40, y + 30, 150, 50)
-    for apple in apples:
-        if HOOKAH_rect.colliderect(apple.rect):
-            apples.remove(apple)
-            heal_sound.play(0)
-    for badapple in badapples:
-        if HOOKAH_rect.colliderect(badapple.rect):
-            badapples.remove(badapple)
-            hit_sound.play(0)
+    GREEN_APPLE_rect = pg.Rect(250, green_apple_y, 150, 50)
 
-    apples.draw(sc)
-    badapples.draw(sc)
+    if HOOKAH_rect.colliderect(GREEN_APPLE_rect):
+        heal_sound.play(0)
+
+    # apples.draw(sc)
+    # badapples.draw(sc)
 
     pg.display.update()
 
@@ -171,46 +148,6 @@ while menu:
     manager.draw_ui(sc)
     pg.display.update()
 
-
-class Apple(pg.sprite.Sprite):
-    def __init__(self, x, surf, group):
-        pg.sprite.Sprite.__init__(self)
-        self.image = surf
-        self.rect = self.image.get_rect(center=(x, 0))
-        # добавляем в группу
-        self.add(group)
-        # у машин будет разная скорость
-        self.speed = randint(3, 4)
-
-    def update(self):
-        if self.rect.y < 620:
-            self.rect.y += self.speed
-        else:
-            # теперь не перебрасываем вверх, а удаляем из всех групп
-            self.kill()
-
-
-class BadApple(pg.sprite.Sprite):
-    def __init__(self, x, surf, group):
-        pg.sprite.Sprite.__init__(self)
-        self.image = surf
-        self.rect = self.image.get_rect(center=(x, 0))
-        # добавляем в группу
-        self.add(group)
-        # у машин будет разная скорость
-        self.speed = randint(3, 4)
-
-    def update(self):
-        if self.rect.y < 620:
-            self.rect.y += self.speed
-        else:
-            # теперь не перебрасываем вверх, а удаляем из всех групп
-            self.kill()
-
-
-apples = pg.sprite.Group()
-badapples = pg.sprite.Group()
-
 bg_y = 0
 
 # run = True
@@ -227,9 +164,9 @@ while run:
     for i in pg.event.get():
         if i.type == pg.QUIT:
             run = False
-        elif i.type == pg.USEREVENT:
-            Apple(randrange(103, 515, 213), GREEN_APPLES_NEW[randint(0, 5)], apples)
-            BadApple(randrange(103, 640, 213), BAD_APPLES_NEW[randint(0, 1)], badapples)
+            pg.quit()
+        if i.type == green_apple_timer:
+            green_apple_list
 
     keys = pg.key.get_pressed()
     if keys[pg.K_a] and x > 5:
@@ -253,6 +190,9 @@ while run:
     if keys[pg.K_s] and y < 600 - height - 5:
         y += speed
 
+    sc.blit(green_apple, (250, green_apple_y))
+    green_apple_y += 10
+
     drawWindow()
     pg.display.update()
     pg.time.delay(0)
@@ -261,7 +201,4 @@ while run:
     pg.mixer.music.play(loops=-1)
     pg.mixer.music.set_volume(0.2)
     clock.tick(60)
-    apples.update()
-    badapples.update()
 
-pg.quit()
