@@ -22,10 +22,8 @@ HOOKAH = ('sprites/Hookah/1.png', 'sprites/Hookah/2.png', 'sprites/Hookah/3.png'
           'sprites/Hookah/7.png')
 HOOKAH_NEW = [pg.transform.scale(pg.image.load(i), (200, 200)) for i in HOOKAH]
 
-LEFT = pg.image.load('sprites/Hookah/left.png')
-RIGHT = pg.image.load('sprites/Hookah/right.png')
-HOOKAH_LEFT = pg.transform.scale(LEFT, (200, 200))
-HOOKAH_RIGHT = pg.transform.scale(RIGHT, (200, 200))
+HOOKAH_LEFT = pg.transform.scale(pg.image.load('sprites/Hookah/left.png'), (200, 200))
+HOOKAH_RIGHT = pg.transform.scale(pg.image.load('sprites/Hookah/right.png'), (200, 200))
 
 """ВРЕМЕННО ПОСТАВИЛ BG2!!!"""
 bg = pg.image.load('bg2.jpg')
@@ -47,9 +45,8 @@ heal_sound.set_volume(0.09)
 
 clock = pg.time.Clock()
 
-image_size = (200, 200)
-x = 287
-y = 500
+x = 220
+y = 450
 width = 30
 height = 30
 speed = 2
@@ -210,6 +207,8 @@ while run:
     for i in pg.event.get():
         if i.type == pg.QUIT:
             run = False
+            pg.quit()
+
         elif i.type == pg.USEREVENT:
             Apple(randrange(103, 515, 213), GREEN_APPLES_NEW[randint(0, 5)], apples)
             BadApple(randrange(103, 640, 213), BAD_APPLES_NEW[randint(0, 1)], badapples)
@@ -239,12 +238,6 @@ while run:
     drawWindow()
     pg.display.update()
     pg.time.delay(0)
-    pg.mixer.init()
-    pg.mixer.music.load('sounds/bg_lvl1.mp3')
-    pg.mixer.music.play(loops=-1)
-    pg.mixer.music.set_volume(0.2)
     clock.tick(60)
     apples.update()
     badapples.update()
-
-pg.quit()
