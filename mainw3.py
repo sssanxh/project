@@ -65,12 +65,10 @@ animCount = 0
 animCount2 = 0
 run = None
 
-
-
-
 def drawWindow():
     global animCount
-    sc.blit(bg, (0, 0))
+    # sc.blit(bg, (0, bg_y))
+    # sc.blit(bg, (0, bg_y + 620))
     if animCount + 1 >= 30:
         animCount = 0
     if stay:
@@ -82,6 +80,8 @@ def drawWindow():
         elif right:
             sc.blit(HOOKAH_RIGHT, (x, y))
     apples.draw(sc)
+
+
     pg.display.update()
 
 #инциализуруем переменные для pg_gui и вводим кнопки нашего меню
@@ -163,10 +163,20 @@ class Apple(pg.sprite.Sprite):
 
 apples = pg.sprite.Group()
 
+bg_y = 0
 
 # run = True
 #главный цикл
 while run:
+
+    """Движение заднего фона"""
+    sc.blit(bg, (0, bg_y))
+    sc.blit(bg, (0, bg_y - 620))
+    bg_y += 2
+    if bg_y == 620:
+        bg_y = 0
+
+
     for i in pg.event.get():
         if i.type == pg.QUIT:
             run = False
