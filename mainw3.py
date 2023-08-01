@@ -81,22 +81,28 @@ def drawWindow():
 #инциализуруем переменные для pg_gui и вводим кнопки нашего меню
 manager = pg_gui.UIManager((620,620))
 
-hello_button = pg_gui.elements.UIButton(relative_rect=pg.Rect((0, 100), (200, 50)),
+hello_button = pg_gui.elements.UIButton(relative_rect=pg.Rect((40, 200), (200, 50)),
                                              text='НАЧАТЬ БЕЗУМИЕ',
                                              manager=manager)
-exit_button = pg_gui.elements.UIButton(relative_rect=pg.Rect((0, 300), (200, 50)),
+exit_button = pg_gui.elements.UIButton(relative_rect=pg.Rect((40, 350), (200, 50)),
                                              text='Я БОЮСЬ',
                                              manager=manager)
 
 # цикл меню, который работает через pygame_gui, при нажатии кнопки hello_button запускает игровой цикл
+font = pg.font.SysFont('Fixedsys', size=32)
+
+def draw_text(text, font, text_col, x,y):
+    img = font.render(text, False, text_col)
+    sc.blit(img,(x,y))
 
 logo = pg.image.load('logo.png')
 logo = pg.transform.scale(logo, (500,500))
-sc.blit(logo, (65,120))
+sc.blit(logo, (60,65))
 pg.display.update()
-
 pg.time.delay(1500)
-
+sc.blit(bg, (0,0))
+sc.blit(pg.transform.scale(logo, (165, 165)), (410,450))
+draw_text('КАЛЬЯННЫЙ ГОНЩИК', font, (255,255,255), 40,50)
 
 menu = True
 while menu:
