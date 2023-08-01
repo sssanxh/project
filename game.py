@@ -6,7 +6,7 @@ pg.init()
 pg.time.set_timer(pg.USEREVENT, 100)  # ЧАСТОТА ПОЯВЛЕНИЯ ЯБЛОК
 
 sc = pg.display.set_mode((620, 620))
-"""VASYA"""
+
 pg.display.set_caption("КАЛЬЯННЫЙ ГОНЩИК: ВОЗМЕЗДИЕ")
 
 BAD_APPLES = ('sprites/Bad_Apple/1.png', 'sprites/Bad_Apple/2.png')
@@ -39,7 +39,12 @@ RIGHT = pg.image.load('sprites/Hookah/right.png')
 HOOKAH_LEFT = pg.transform.scale(LEFT, (200, 200))
 HOOKAH_RIGHT = pg.transform.scale(RIGHT, (200, 200))
 
-bg = pg.image.load('bg.png')
+
+
+
+"""ВРЕМЕННО ПОСТАВИЛ BG2!!!"""
+bg = pg.image.load('bg2.jpg')
+
 bg = pg.transform.scale(bg, (620, 620))
 logo = pg.image.load('logo.png')
 logo = pg.transform.scale(logo, (500, 500))
