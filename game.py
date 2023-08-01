@@ -6,7 +6,7 @@ pg.init()
 pg.time.set_timer(pg.USEREVENT, 100)  # ЧАСТОТА ПОЯВЛЕНИЯ ЯБЛОК
 
 sc = pg.display.set_mode((620, 620))
-
+"""VASYA"""
 pg.display.set_caption("КАЛЬЯННЫЙ ГОНЩИК: ВОЗМЕЗДИЕ")
 
 BAD_APPLES = ('sprites/Bad_Apple/1.png', 'sprites/Bad_Apple/2.png')
