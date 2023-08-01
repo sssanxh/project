@@ -161,8 +161,7 @@ class Apple(pg.sprite.Sprite):
         self.add(group)
         # у машин будет разная скорость
         self.speed = randint(3, 4)
-        sc.blit(GREEN_APPLES_NEW[animCount2 // 5], (x, y))
-        animCount += 1
+
 
     def update(self):
         if self.rect.y < 620:
@@ -212,8 +211,8 @@ while run:
             pg.quit()
 
         elif i.type == pg.USEREVENT:
-            Apple(randrange(103, 515, 213), GREEN_APPLES_NEW[randint(0, 1)], apples)
-            BadApple(randrange(103, 515, 213), BAD_APPLES_NEW[randint(0, 1)], badapples)
+            Apple(randrange(106, 533, 205), GREEN_APPLES_NEW[randint(0, 1)], apples)
+            BadApple(randrange(106, 533, 205), BAD_APPLES_NEW[randint(0, 1)], badapples)
 
     keys = pg.key.get_pressed()
     if keys[pg.K_a] and x > 5:
