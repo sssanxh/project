@@ -236,13 +236,13 @@ while run:
         left = True
         right = False
         stay = False
-        x -= speed
+        x -= speed + 2
         animCount = 0
-    elif keys[pg.K_d] and x < 500 - width - 5:
+    elif keys[pg.K_d] and x < 450 - width - 5:
         left = False
         right = True
         stay = False
-        x += speed
+        x += speed + 2
         animCount = 0
     else:
         left = False
