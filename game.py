@@ -30,7 +30,7 @@ bg = pg.image.load('bg2.jpg')
 
 bg = pg.transform.scale(bg, (620, 620))
 logo = pg.image.load('logo.png')
-logo = pg.transform.scale(logo, (500, 500))
+logo = pg.transform.scale(logo, (300, 300))
 logomini = logo.copy()
 
 bg_music1 = pg.mixer.Sound('sounds/bg_lvl1.mp3')
@@ -125,7 +125,7 @@ def fade_out(surface, fade_speed, x, y, ):  # Функция для плавно
         pg.time.delay(16)
 
 
-fade_out(logo, 1, 60, 65)  # затухание логотипа вначале (поверхность, скорость изменения альфа, координаты х у)
+fade_out(logo, 1, 150, 150)  # затухание логотипа вначале (поверхность, скорость изменения альфа, координаты х у)
 
 sc.blit(bg, (0, 0))  # (фон для менюшки, лого в нижнем углу и текст)
 sc.blit(pg.transform.scale(logomini, (165, 165)), (410, 450))
