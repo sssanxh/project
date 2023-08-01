@@ -4,7 +4,7 @@ import pygame as pg
 
 # Люблю какать. Насрал.
 pg.init()
-pg.time.set_timer(pg.USEREVENT, 1000) #ЧАСТОТА ПОЯВЛЕНИЯ ЯБЛОК
+pg.time.set_timer(pg.USEREVENT, 10000) #ЧАСТОТА ПОЯВЛЕНИЯ ЯБЛОК
 
 sc = pg.display.set_mode((620, 620))
 
@@ -58,6 +58,7 @@ right = False
 stay = True
 animCount = 0
 animCount2 = 0
+run = None
 
 
 
