@@ -37,6 +37,9 @@ HOOKAH_RIGHT = pg.transform.scale(RIGHT, (200, 200))
 
 bg = pg.image.load('bg.png')
 bg = pg.transform.scale(bg, (620, 620))
+logo = pg.image.load('logo.png')
+logo = pg.transform.scale(logo, (500,500))
+logomini = logo.copy()
 
 bg_music1 = pg.mixer.Sound('bg_lvl1.mp3')
 menu_music = pg.mixer.Sound('menu.mp3')
@@ -96,16 +99,28 @@ def draw_text(text, font, text_col, x,y):
     img = font.render(text, False, text_col)
     sc.blit(img,(x,y))
 
-logo = pg.image.load('logo.png')
-logo = pg.transform.scale(logo, (500,500))
-sc.blit(logo, (60,65))
-pg.display.update()
-pg.time.delay(1500)
-sc.blit(bg, (0,0))
-sc.blit(pg.transform.scale(logo, (165, 165)), (410,450))
+def fade_out(surface, fade_speed, x,y, ):# Функция для плавного исчезновения
+    alpha = 255
+    while alpha > 0:
+        alpha -= fade_speed
+        surface.set_alpha(alpha)
+        sc.fill((0,0,0))
+        sc.blit(surface, (x, y))
+        pg.display.update()
+        clock.tick(60)
+        pg.time.delay(16)
+
+
+
+
+
+fade_out(logo,1, 60, 65) #затухание логотипа вначале (поверхность, скорость изменения альфа, координаты х у)
+
+sc.blit(bg, (0,0)) #(фон для менюшки, лого в нижнем углу и текст)
+sc.blit(pg.transform.scale(logomini, (165, 165)), (410,450))
 draw_text('КАЛЬЯННЫЙ ГОНЩИК', font, (255,255,255), 40,50)
 
-menu = True
+menu = True #цикл для gui менюшки
 while menu:
     time_delta = clock.tick(60) / 1000.0
     for i in pg.event.get():
