@@ -34,7 +34,7 @@ logo = pg.transform.scale(logo, (300, 300))
 logomini = logo.copy()
 
 bg_music1 = pg.mixer.Sound('sounds/bg_lvl1.mp3')
-menu_music = pg.mixer.Sound('sounds/menu.mp3')
+menu_music = pg.mixer.Sound('sounds/menulol.mp3')
 hit_sound = pg.mixer.Sound('sounds/hit.mp3')
 heal_sound = pg.mixer.Sound('sounds/heal.mp3')
 menu_music.play(-1)
@@ -161,6 +161,8 @@ class Apple(pg.sprite.Sprite):
         self.add(group)
         # у машин будет разная скорость
         self.speed = randint(3, 4)
+        sc.blit(GREEN_APPLES_NEW[animCount2 // 5], (x, y))
+        animCount += 1
 
     def update(self):
         if self.rect.y < 620:
@@ -210,8 +212,8 @@ while run:
             pg.quit()
 
         elif i.type == pg.USEREVENT:
-            Apple(randrange(103, 515, 213), GREEN_APPLES_NEW[randint(0, 5)], apples)
-            BadApple(randrange(103, 640, 213), BAD_APPLES_NEW[randint(0, 1)], badapples)
+            Apple(randrange(103, 515, 213), GREEN_APPLES_NEW[randint(0, 1)], apples)
+            BadApple(randrange(103, 515, 213), BAD_APPLES_NEW[randint(0, 1)], badapples)
 
     keys = pg.key.get_pressed()
     if keys[pg.K_a] and x > 5:
