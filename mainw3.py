@@ -3,6 +3,8 @@ import pygame_gui as pg_gui
 import pygame as pg
 
 # Люблю какать. Насрал.
+
+# ГОВНО В ВАГИНЕ
 pg.init()
 pg.time.set_timer(pg.USEREVENT, 10000) #ЧАСТОТА ПОЯВЛЕНИЯ ЯБЛОК
 
