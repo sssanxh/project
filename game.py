@@ -2,9 +2,6 @@ from random import randint
 import pygame_gui as pg_gui
 import pygame as pg
 
-# Люблю какать. Насрал.
-
-# ГОВНО В ВАГИНЕ
 pg.init()
 pg.time.set_timer(pg.USEREVENT, 10000) #ЧАСТОТА ПОЯВЛЕНИЯ ЯБЛОК
 
@@ -43,8 +40,8 @@ logo = pg.image.load('logo.png')
 logo = pg.transform.scale(logo, (500,500))
 logomini = logo.copy()
 
-bg_music1 = pg.mixer.Sound('bg_lvl1.mp3')
-menu_music = pg.mixer.Sound('menu.mp3')
+bg_music1 = pg.mixer.Sound('sounds/bg_lvl1.mp3')
+menu_music = pg.mixer.Sound('sounds/menu.mp3')
 menu_music.play(-1)
 menu_music.set_volume(0.05)
 bg_music1.set_volume(0.05)
@@ -217,7 +214,7 @@ while run:
     pg.display.update()
     pg.time.delay(0)
     pg.mixer.init()
-    pg.mixer.music.load('bg_lvl1.mp3')
+    pg.mixer.music.load('sounds/bg_lvl1.mp3')
     pg.mixer.music.play(loops=-1)
     pg.mixer.music.set_volume(0.2)
     clock.tick(60)
