@@ -7,44 +7,25 @@ pg.init()
 pg.time.set_timer(pg.USEREVENT, 10000)  # ЧАСТОТА ПОЯВЛЕНИЯ ЯБЛОК
 
 sc = pg.display.set_mode((620, 620))
-road = (103, 309, 515)
 pg.display.set_caption("КАЛЬЯННЫЙ ГОНЩИК: ВОЗМЕЗДИЕ")
 
 BAD_APPLES = ('sprites/Bad_Apple/1.png', 'sprites/Bad_Apple/2.png')
-BAD_APPLES_NEW = []
-for i in BAD_APPLES:
-    image = pg.image.load(i)
-    scaled_image = pg.transform.scale(image, (150, 150))
-    BAD_APPLES_NEW.append(scaled_image)
-
-green_apple = pg.image.load('sprites/Green_Apple/1.png')
-green_apple_y = 0
+BAD_APPLES_NEW = [pg.transform.scale(pg.image.load(i), (150, 150)) for i in BAD_APPLES]
 
 GREEN_APPLES = ('sprites/Green_Apple/1.png', 'sprites/Green_Apple/2.png',
                 'sprites/Green_Apple/3.png', 'sprites/Green_Apple/4.png',
                 'sprites/Green_Apple/5.png', 'sprites/Green_Apple/6.png')
-GREEN_APPLES_NEW = []
-for i in GREEN_APPLES:
-    image = pg.image.load(i)
-    scaled_image = pg.transform.scale(image, (150, 150))
-    GREEN_APPLES_NEW.append(scaled_image)
+GREEN_APPLES_NEW = [pg.transform.scale(pg.image.load(i), (150, 150)) for i in GREEN_APPLES]
 
 HOOKAH = ('sprites/Hookah/1.png', 'sprites/Hookah/2.png', 'sprites/Hookah/3.png',
           'sprites/Hookah/4.png', 'sprites/Hookah/5.png', 'sprites/Hookah/6.png',
           'sprites/Hookah/7.png')
-HOOKAH_NEW = []
-for i in HOOKAH:
-    image = pg.image.load(i)
-    scaled_image = pg.transform.scale(image, (200, 200))
-    HOOKAH_NEW.append(scaled_image)
+HOOKAH_NEW = [pg.transform.scale(pg.image.load(i), (200, 200)) for i in HOOKAH]
 
 LEFT = pg.image.load('sprites/Hookah/left.png')
 RIGHT = pg.image.load('sprites/Hookah/right.png')
 HOOKAH_LEFT = pg.transform.scale(LEFT, (200, 200))
 HOOKAH_RIGHT = pg.transform.scale(RIGHT, (200, 200))
-
-
-
 
 """ВРЕМЕННО ПОСТАВИЛ BG2!!!"""
 bg = pg.image.load('bg2.jpg')
@@ -61,6 +42,8 @@ heal_sound = pg.mixer.Sound('sounds/heal.mp3')
 menu_music.play(-1)
 menu_music.set_volume(0.05)
 bg_music1.set_volume(0.05)
+hit_sound.set_volume(0.09)
+heal_sound.set_volume(0.09)
 
 clock = pg.time.Clock()
 
