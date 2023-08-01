@@ -79,6 +79,14 @@ def drawWindow():
             sc.blit(HOOKAH_LEFT, (x, y))
         elif right:
             sc.blit(HOOKAH_RIGHT, (x, y))
+
+    HOOKAH_rect = pg.Rect(x + 40, y + 30, 150, 50)
+    for apple in apples:
+        if HOOKAH_rect.colliderect(apple.rect):
+            apples.remove(apple)
+
+
+
     apples.draw(sc)
 
 
@@ -150,7 +158,7 @@ class Apple(pg.sprite.Sprite):
         # добавляем в группу
         self.add(group)
         # у машин будет разная скорость
-        self.speed = randint(1,4)
+        self.speed = randint(3,4)
 
     def update(self):
         if self.rect.y < 620:
