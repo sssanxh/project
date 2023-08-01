@@ -3,11 +3,18 @@ import pygame_gui as pg_gui
 import pygame as pg
 
 pg.init()
-pg.time.set_timer(pg.USEREVENT, 10000) #ЧАСТОТА ПОЯВЛЕНИЯ ЯБЛОК
+pg.time.set_timer(pg.USEREVENT, 100)  # ЧАСТОТА ПОЯВЛЕНИЯ ЯБЛОК
 
 sc = pg.display.set_mode((620, 620))
 
 pg.display.set_caption("КАЛЬЯННЫЙ ГОНЩИК: ВОЗМЕЗДИЕ")
+
+BAD_APPLES = ('sprites/Bad_Apple/1.png', 'sprites/Bad_Apple/2.png')
+BAD_APPLES_NEW = []
+for i in BAD_APPLES:
+    image = pg.image.load(i)
+    scaled_image = pg.transform.scale(image, (100, 100))
+    BAD_APPLES_NEW.append(scaled_image)
 
 GREEN_APPLES = ('sprites/Green_Apple/1.png', 'sprites/Green_Apple/2.png',
                 'sprites/Green_Apple/3.png', 'sprites/Green_Apple/4.png',
@@ -17,7 +24,6 @@ for i in GREEN_APPLES:
     image = pg.image.load(i)
     scaled_image = pg.transform.scale(image, (100, 100))
     GREEN_APPLES_NEW.append(scaled_image)
-
 
 HOOKAH = ('sprites/Hookah/1.png', 'sprites/Hookah/2.png', 'sprites/Hookah/3.png',
           'sprites/Hookah/4.png', 'sprites/Hookah/5.png', 'sprites/Hookah/6.png',
@@ -33,15 +39,16 @@ RIGHT = pg.image.load('sprites/Hookah/right.png')
 HOOKAH_LEFT = pg.transform.scale(LEFT, (200, 200))
 HOOKAH_RIGHT = pg.transform.scale(RIGHT, (200, 200))
 
-
 bg = pg.image.load('bg.png')
 bg = pg.transform.scale(bg, (620, 620))
 logo = pg.image.load('logo.png')
-logo = pg.transform.scale(logo, (500,500))
+logo = pg.transform.scale(logo, (500, 500))
 logomini = logo.copy()
 
 bg_music1 = pg.mixer.Sound('sounds/bg_lvl1.mp3')
 menu_music = pg.mixer.Sound('sounds/menu.mp3')
+hit_sound = pg.mixer.Sound('sounds/hit.mp3')
+heal_sound = pg.mixer.Sound('sounds/heal.mp3')
 menu_music.play(-1)
 menu_music.set_volume(0.05)
 bg_music1.set_volume(0.05)
@@ -62,6 +69,7 @@ animCount = 0
 animCount2 = 0
 run = None
 
+
 def drawWindow():
     global animCount
     # sc.blit(bg, (0, bg_y))
@@ -81,53 +89,56 @@ def drawWindow():
     for apple in apples:
         if HOOKAH_rect.colliderect(apple.rect):
             apples.remove(apple)
-
-
+            heal_sound.play(0)
+    for badapple in badapples:
+        if HOOKAH_rect.colliderect(badapple.rect):
+            badapples.remove(badapple)
+            hit_sound.play(0)
 
     apples.draw(sc)
-
+    badapples.draw(sc)
 
     pg.display.update()
 
-#инциализуруем переменные для pg_gui и вводим кнопки нашего меню
-manager = pg_gui.UIManager((620,620))
+
+# инциализуруем переменные для pg_gui и вводим кнопки нашего меню
+manager = pg_gui.UIManager((620, 620))
 
 hello_button = pg_gui.elements.UIButton(relative_rect=pg.Rect((40, 200), (200, 50)),
-                                             text='НАЧАТЬ БЕЗУМИЕ',
-                                             manager=manager)
+                                        text='НАЧАТЬ БЕЗУМИЕ',
+                                        manager=manager)
 exit_button = pg_gui.elements.UIButton(relative_rect=pg.Rect((40, 350), (200, 50)),
-                                             text='Я БОЮСЬ',
-                                             manager=manager)
+                                       text='Я БОЮСЬ',
+                                       manager=manager)
 
 # цикл меню, который работает через pygame_gui, при нажатии кнопки hello_button запускает игровой цикл
 font = pg.font.SysFont('Fixedsys', size=32)
 
-def draw_text(text, font, text_col, x,y):
-    img = font.render(text, False, text_col)
-    sc.blit(img,(x,y))
 
-def fade_out(surface, fade_speed, x,y, ):# Функция для плавного исчезновения
+def draw_text(text, font, text_col, x, y):
+    img = font.render(text, False, text_col)
+    sc.blit(img, (x, y))
+
+
+def fade_out(surface, fade_speed, x, y, ):  # Функция для плавного исчезновения
     alpha = 255
     while alpha > 0:
         alpha -= fade_speed
         surface.set_alpha(alpha)
-        sc.fill((0,0,0))
+        sc.fill((0, 0, 0))
         sc.blit(surface, (x, y))
         pg.display.update()
         clock.tick(60)
         pg.time.delay(16)
 
 
+fade_out(logo, 1, 60, 65)  # затухание логотипа вначале (поверхность, скорость изменения альфа, координаты х у)
 
+sc.blit(bg, (0, 0))  # (фон для менюшки, лого в нижнем углу и текст)
+sc.blit(pg.transform.scale(logomini, (165, 165)), (410, 450))
+draw_text('КАЛЬЯННЫЙ ГОНЩИК', font, (255, 255, 255), 40, 50)
 
-
-fade_out(logo,1, 60, 65) #затухание логотипа вначале (поверхность, скорость изменения альфа, координаты х у)
-
-sc.blit(bg, (0,0)) #(фон для менюшки, лого в нижнем углу и текст)
-sc.blit(pg.transform.scale(logomini, (165, 165)), (410,450))
-draw_text('КАЛЬЯННЫЙ ГОНЩИК', font, (255,255,255), 40,50)
-
-menu = True #цикл для gui менюшки
+menu = True  # цикл для gui менюшки
 while menu:
     time_delta = clock.tick(60) / 1000.0
     for i in pg.event.get():
@@ -147,6 +158,7 @@ while menu:
     manager.draw_ui(sc)
     pg.display.update()
 
+
 class Apple(pg.sprite.Sprite):
     def __init__(self, x, surf, group):
         pg.sprite.Sprite.__init__(self)
@@ -155,7 +167,7 @@ class Apple(pg.sprite.Sprite):
         # добавляем в группу
         self.add(group)
         # у машин будет разная скорость
-        self.speed = randint(3,4)
+        self.speed = randint(3, 4)
 
     def update(self):
         if self.rect.y < 620:
@@ -164,14 +176,30 @@ class Apple(pg.sprite.Sprite):
             # теперь не перебрасываем вверх, а удаляем из всех групп
             self.kill()
 
+class BadApple(pg.sprite.Sprite):
+    def __init__(self, x, surf, group):
+        pg.sprite.Sprite.__init__(self)
+        self.image = surf
+        self.rect = self.image.get_rect(center=(x, 0))
+        # добавляем в группу
+        self.add(group)
+        # у машин будет разная скорость
+        self.speed = randint(3, 4)
 
+    def update(self):
+        if self.rect.y < 620:
+            self.rect.y += self.speed
+        else:
+            # теперь не перебрасываем вверх, а удаляем из всех групп
+            self.kill()
 
 apples = pg.sprite.Group()
+badapples = pg.sprite.Group()
 
 bg_y = 0
 
 # run = True
-#главный цикл
+# главный цикл
 while run:
 
     """Движение заднего фона"""
@@ -181,13 +209,12 @@ while run:
     if bg_y == 620:
         bg_y = 0
 
-
     for i in pg.event.get():
         if i.type == pg.QUIT:
             run = False
         elif i.type == pg.USEREVENT:
-            Apple(randint(100,520), GREEN_APPLES_NEW[randint(0,5)],apples)
-
+            Apple(randint(100, 200), GREEN_APPLES_NEW[randint(0, 5)], apples)
+            BadApple(randint(400, 500), BAD_APPLES_NEW[randint(0, 1)], badapples)
     keys = pg.key.get_pressed()
     if keys[pg.K_a] and x > 5:
         left = True
@@ -219,5 +246,6 @@ while run:
     pg.mixer.music.set_volume(0.2)
     clock.tick(60)
     apples.update()
+    badapples.update()
 
 pg.quit()
