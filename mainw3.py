@@ -79,44 +79,44 @@ def drawWindow():
     pg.display.update()
 
 #инциализуруем переменные для pg_gui и вводим кнопки нашего меню
-# manager = pg_gui.UIManager((620,620))
-#
-# hello_button = pg_gui.elements.UIButton(relative_rect=pg.Rect((0, 100), (200, 50)),
-#                                              text='НАЧАТЬ БЕЗУМИЕ',
-#                                              manager=manager)
-# exit_button = pg_gui.elements.UIButton(relative_rect=pg.Rect((0, 300), (200, 50)),
-#                                              text='Я БОЮСЬ',
-#                                              manager=manager)
-#
-# # цикл меню, который работает через pygame_gui, при нажатии кнопки hello_button запускает игровой цикл
-#
-# logo = pg.image.load('logo.png')
-# logo = pg.transform.scale(logo, (500,500))
-# sc.blit(logo, (65,120))
-# pg.display.update()
-#
-# pg.time.delay(1500)
-#
-#
-# menu = True
-# while menu:
-#     time_delta = clock.tick(60) / 1000.0
-#     for i in pg.event.get():
-#         if i.type == pg.QUIT:
-#             menu = False
-#         if i.type == pg_gui.UI_BUTTON_PRESSED:
-#             if i.ui_element == hello_button:
-#                 run = True
-#                 menu = False
-#                 menu_music.stop()
-#                 bg_music1.play(-1)
-#             if i.ui_element == exit_button:
-#                 menu = False
-#                 run = False
-#         manager.process_events(i)
-#     manager.update(time_delta)
-#     manager.draw_ui(sc)
-#     pg.display.update()
+manager = pg_gui.UIManager((620,620))
+
+hello_button = pg_gui.elements.UIButton(relative_rect=pg.Rect((0, 100), (200, 50)),
+                                             text='НАЧАТЬ БЕЗУМИЕ',
+                                             manager=manager)
+exit_button = pg_gui.elements.UIButton(relative_rect=pg.Rect((0, 300), (200, 50)),
+                                             text='Я БОЮСЬ',
+                                             manager=manager)
+
+# цикл меню, который работает через pygame_gui, при нажатии кнопки hello_button запускает игровой цикл
+
+logo = pg.image.load('logo.png')
+logo = pg.transform.scale(logo, (500,500))
+sc.blit(logo, (65,120))
+pg.display.update()
+
+pg.time.delay(1500)
+
+
+menu = True
+while menu:
+    time_delta = clock.tick(60) / 1000.0
+    for i in pg.event.get():
+        if i.type == pg.QUIT:
+            menu = False
+        if i.type == pg_gui.UI_BUTTON_PRESSED:
+            if i.ui_element == hello_button:
+                run = True
+                menu = False
+                menu_music.stop()
+                bg_music1.play(-1)
+            if i.ui_element == exit_button:
+                menu = False
+                run = False
+        manager.process_events(i)
+    manager.update(time_delta)
+    manager.draw_ui(sc)
+    pg.display.update()
 
 class Apple(pg.sprite.Sprite):
     def __init__(self, x, surf, group):
@@ -140,7 +140,7 @@ class Apple(pg.sprite.Sprite):
 apples = pg.sprite.Group()
 
 
-run = True
+# run = True
 #главный цикл
 while run:
     for i in pg.event.get():
