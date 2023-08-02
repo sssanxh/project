@@ -89,6 +89,7 @@ def drawWindow():
         if HOOKAH_rect.colliderect(apple.rect):
             apples.remove(apple)
             heal_sound.play(0)
+            hits -= 1
     for badapple in badapples:
         if HOOKAH_rect.colliderect(badapple.rect):
             badapples.remove(badapple)
@@ -220,10 +221,12 @@ badapples = pg.sprite.Group()
 
 bg_y = 0
 
+green_timer = pg.USEREVENT + 1
+pg.time.set_timer(green_timer, 100)  # частота появления гнилых яблок
 bad_timer = pg.USEREVENT + 1
-good_timer = bad_timer + 10 #xd
-pg.time.set_timer(bad_timer, 1500) # частота появления гнилых яблок
-pg.time.set_timer(good_timer, 5000) # частота появления гнилых яблок
+good_timer = bad_timer + 100 #xd
+pg.time.set_timer(bad_timer, 1000) # частота появления гнилых яблок
+pg.time.set_timer(good_timer, 10000) # частота появления зеленых яблок
 
 Alive = True
 # главный цикл
@@ -243,6 +246,9 @@ while run:
 
             elif i.type == bad_timer:
                 BadApple(randrange(106, 533, 205), BAD_APPLES_NEW, badapples)
+            elif i.type == green_timer:
+                Apple(randrange(106, 533, 205), GREEN_APPLES_NEW, apples)
+
 
             elif i.type == good_timer:
                 Apple(randrange(106, 533, 205), GREEN_APPLES_NEW, apples)
