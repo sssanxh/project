@@ -155,7 +155,9 @@ while menu:
 class Apple(pg.sprite.Sprite):
     def __init__(self, x, surf, group):
         pg.sprite.Sprite.__init__(self)
-        self.image = surf
+        self.images = surf.copy()
+        self.cur = 0
+        self.image = self.images[self.cur]
         self.rect = self.image.get_rect(center=(x, 0))
         # добавляем в группу
         self.add(group)
@@ -164,6 +166,8 @@ class Apple(pg.sprite.Sprite):
 
 
     def update(self):
+        self.cur = (self.cur + 1) % len(self.images)
+        self.image = self.images[self.cur]
         if self.rect.y < 620:
             self.rect.y += self.speed
         else:
@@ -211,7 +215,7 @@ while run:
             pg.quit()
 
         elif i.type == pg.USEREVENT:
-            Apple(randrange(106, 533, 205), GREEN_APPLES_NEW[randint(0, 1)], apples)
+            Apple(randrange(106, 533, 205), GREEN_APPLES_NEW, apples)
             BadApple(randrange(106, 533, 205), BAD_APPLES_NEW[randint(0, 1)], badapples)
 
     keys = pg.key.get_pressed()
