@@ -35,7 +35,7 @@ LEVELS_BG = ('bg1.jpg', 'bg2.jpg', 'bg3.jpg')
 LEVELS_MUSIC = ('sounds/bg_lvl1.mp3', 'sounds/bg_lvl2.mp3', 'sounds/bg_lvl3.mp3')
 
 """ВРЕМЕННО ПОСТАВИЛ BG2!!!"""
-bg = pg.image.load('bg2.jpg')
+bg = pg.image.load('bg1.jpg')
 
 bg = pg.transform.scale(bg, (620, 620))
 logo = pg.image.load('logo.png')
@@ -316,7 +316,7 @@ while run:
         losewindow()
     if level_up == True:
         sc.fill((0, 0, 0))
-        draw_text('уровень 1 пройден', font, (255, 255, 255), 40, 50)
+        draw_text('уровень 1 пройден(продолжение следует)', font, (255, 255, 255), 40, 50)
     pg.display.update()
     pg.time.delay(0)
     clock.tick(60)
