@@ -85,7 +85,7 @@ def drawWindow():
         elif right:
             sc.blit(HOOKAH_RIGHT, (x, y))
 
-    HOOKAH_rect = pg.Rect(x + 40, y + 30, 150, 50)
+    HOOKAH_rect = pg.Rect(x + 60, y + 20, 60, 30)
     for apple in apples:
         if HOOKAH_rect.colliderect(apple.rect):
             apples.remove(apple)
@@ -98,6 +98,7 @@ def drawWindow():
             hits += 1
             if hits == 3:
                 Alive = False
+                bg_music1.stop()
                 lose.play(-1)
 
     apples.draw(sc)
