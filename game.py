@@ -116,7 +116,6 @@ exit_button = pg_gui.elements.UIButton(relative_rect=pg.Rect((40, 350), (200, 50
                                        text='Я БОЮСЬ',
                                        manager=manager)
 
-# цикл меню, который работает через pygame_gui, при нажатии кнопки hello_button запускает игровой цикл
 font = pg.font.SysFont('Fixedsys', size=32)
 
 
@@ -150,6 +149,7 @@ sc.blit(bg, (0, 0))  # (фон для менюшки, лого в нижнем �
 sc.blit(pg.transform.scale(logomini, (165, 165)), (430, 450))
 draw_text('КАЛЬЯННЫЙ ГОНЩИК', font, (255, 255, 255), 40, 50)
 
+# цикл меню, который работает через pygame_gui, при нажатии кнопки hello_button запускает игровой цикл
 menu = True  # цикл для gui менюшки
 while menu:
     time_delta = clock.tick(60) / 1000.0
@@ -221,7 +221,9 @@ badapples = pg.sprite.Group()
 bg_y = 0
 
 bad_timer = pg.USEREVENT + 1
-pg.time.set_timer(bad_timer, 1500)  # частота появления гнилых яблок
+good_timer = bad_timer + 10 #xd
+pg.time.set_timer(bad_timer, 1500) # частота появления гнилых яблок
+pg.time.set_timer(good_timer, 5000) # частота появления гнилых яблок
 
 Alive = True
 # главный цикл
@@ -241,6 +243,10 @@ while run:
 
             elif i.type == bad_timer:
                 BadApple(randrange(106, 533, 205), BAD_APPLES_NEW, badapples)
+
+            elif i.type == good_timer:
+                Apple(randrange(106, 533, 205), GREEN_APPLES_NEW, apples)
+
 
         keys = pg.key.get_pressed()
         if keys[pg.K_a] and x > 5:
