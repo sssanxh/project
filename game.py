@@ -41,7 +41,7 @@ menu_music = pg.mixer.Sound('sounds/menulol.mp3')
 hit_sound = pg.mixer.Sound('sounds/hit.mp3')
 heal_sound = pg.mixer.Sound('sounds/heal.mp3')
 menu_music.play(-1)
-menu_music.set_volume(0.05)
+menu_music.set_volume(0.5)
 bg_music1.set_volume(0.05)
 hit_sound.set_volume(0.09)
 heal_sound.set_volume(0.09)
@@ -210,7 +210,7 @@ double_timer = pg.USEREVENT + 1
 pg.time.set_timer(double_timer, 20000) # частота появления двойного яблочка
 
 
-run = True
+#run = True
 # главный цикл
 while run:
 
@@ -228,7 +228,7 @@ while run:
 
         elif i.type == green_timer:
             Apple(randrange(106, 533, 205), GREEN_APPLES_NEW, apples)
-        elif i.type == pg.USEREVENT:
+        elif i.type == bad_timer:
             BadApple(randrange(106, 533, 205), BAD_APPLES_NEW, badapples)
 
     keys = pg.key.get_pressed()
