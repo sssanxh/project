@@ -34,7 +34,6 @@ HOOKAH_RIGHT = pg.transform.scale(pg.image.load('sprites/Hookah/right.png'), (20
 LEVELS_BG = ('bg1.jpg', 'bg2.jpg', 'bg3.jpg')
 LEVELS_MUSIC = ('sounds/bg_lvl1.mp3', 'sounds/bg_lvl2.mp3', 'sounds/bg_lvl3.mp3')
 
-"""ВРЕМЕННО ПОСТАВИЛ BG2!!!"""
 bg = pg.image.load('bg1.jpg')
 
 bg = pg.transform.scale(bg, (620, 620))
@@ -71,8 +70,39 @@ right = False
 stay = True
 animCount = 0
 run = None
+
 hp = 3
+hp_image = pg.image.load('sprites/HP_and_EXP/hp.png')
+hp_bg_image = pg.image.load('sprites/HP_and_EXP/hpbg.png')
+hp_name = pg.image.load('sprites/HP_and_EXP/healthname.png')
+
+
 exp = 0
+exp_image = pg.image.load('sprites/HP_and_EXP/exp.png')
+exp_name = pg.image.load('sprites/HP_and_EXP/expname.png')
+exp_bg_image = pg.image.load('sprites/HP_and_EXP/expbg.png')
+
+'''Фукнция шкалы ЖИЗЯК)'''
+def HealthBar():
+    sc.blit(hp_bg_image, (10, 0))
+    sc.blit(hp_name, (160, 0))
+    x = 10
+    show = 0
+    while show != hp:
+        sc.blit(hp_image, (x, 0))
+        x += 50
+        show += 1
+
+'''Функция шкалы ОПЫТА?!'''
+def ExpBar():
+    sc.blit(exp_bg_image, (0, 30))
+    sc.blit(exp_name, (310, 30))
+    x = 10
+    show = 0
+    while show != exp:
+        sc.blit(exp_image, (x, 30))
+        x += 50
+        show += 1
 
 
 def drawWindow():
@@ -124,6 +154,9 @@ def drawWindow():
     heal_apples.draw(sc)
     exp_apples.draw(sc)
     bad_apples.draw(sc)
+
+    HealthBar()
+    ExpBar()
 
     pg.display.update()
 
