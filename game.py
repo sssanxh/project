@@ -71,6 +71,8 @@ stay = True
 animCount = 0
 run = None
 
+
+
 hp = 3
 hp_image = pg.image.load('sprites/HP_and_EXP/hp.png')
 hp_bg_image = pg.image.load('sprites/HP_and_EXP/hpbg.png')
@@ -179,8 +181,11 @@ def draw_text(text, font, text_col, x, y):
     sc.blit(img, (x, y))
 
 
+
 # экран проигрыша
 def losewindow(): #доделать функцию
+    global Alive
+    # dead = True
     sc.fill((0, 0, 0))
     huager = pg_gui.UIManager((620, 620))
     hello_button2 = pg_gui.elements.UIButton(relative_rect=pg.Rect((40, 200), (200, 50)),
@@ -189,8 +194,7 @@ def losewindow(): #доделать функцию
     exit_button2 = pg_gui.elements.UIButton(relative_rect=pg.Rect((40, 350), (200, 50)),
                                             text='Я БОЮСЬ',
                                             manager=huager)
-    dead = True
-    while dead:
+    while Alive == False:
         time_delta2 = clock.tick(60) / 1000
         for i in pg.event.get():
             if i.type == pg.QUIT:
@@ -202,7 +206,14 @@ def losewindow(): #доделать функцию
                 if exit_button2.rect.collidepoint(i.pos):
                     quit()
                 if hello_button2.rect.collidepoint(i.pos):
-                    pass #придумать как сделать рестарт
+                    global hp
+                    global exp
+                    hp = 3
+                    exp = 0
+                    Alive = True
+
+                    #придумать как сделать рестарт
+                    '''Придумал)'''
 
             huager.process_events(i)
         huager.update(time_delta2)
@@ -385,7 +396,7 @@ while run:
         if keys[pg.K_s] and y < 600 - height - 5:
             y += speed
         drawWindow()
-    else:
+    elif Alive == False:
         losewindow()
     if level_up == True:
         sc.fill((0, 0, 0))
