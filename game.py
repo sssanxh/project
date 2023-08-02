@@ -64,13 +64,13 @@ stay = True
 green_apple_stay = True
 animCount = 0
 run = None
-hits = 0
+hp = 3
 
 
 def drawWindow():
     global animCount
     global Alive
-    global hits
+    global hp
     # sc.blit(bg, (0, bg_y))
     # sc.blit(bg, (0, bg_y + 620))
     if animCount + 1 >= 30:
@@ -89,14 +89,15 @@ def drawWindow():
         if HOOKAH_rect.colliderect(apple.rect):
             apples.remove(apple)
             heal_sound.play(0)
-            hits -= 1
+            if hp > 0:
+                hp += 1
     for badapple in badapples:
         if HOOKAH_rect.colliderect(badapple.rect):
             badapples.remove(badapple)
             hit_sound.play(0)
             # дается три жизни
-            hits += 1
-            if hits == 3:
+            hp -= 1
+            if hp == 0:
                 Alive = False
                 bg_music1.stop()
                 lose.play(-1)
