@@ -20,6 +20,10 @@ GREEN_APPLES = ('sprites/Green_Apple/1.png', 'sprites/Green_Apple/2.png',
                 'sprites/Green_Apple/5.png', 'sprites/Green_Apple/6.png')
 GREEN_APPLES_NEW = [pg.transform.scale(pg.image.load(i), (150, 150)) for i in GREEN_APPLES]
 
+RED_APPLES = ('sprites/Red_Apple/1.png', 'sprites/Red_Apple/2.png',
+              'sprites/Red_Apple/3.png')
+RED_APPLES_NEW = [pg.transform.scale(pg.image.load(i), (150, 150)) for i in RED_APPLES]
+
 HOOKAH = ('sprites/Hookah/1.png', 'sprites/Hookah/2.png', 'sprites/Hookah/3.png',
           'sprites/Hookah/4.png', 'sprites/Hookah/5.png', 'sprites/Hookah/6.png',)
 HOOKAH_NEW = [pg.transform.scale(pg.image.load(i), (200, 200)) for i in HOOKAH]
@@ -89,7 +93,7 @@ def drawWindow():
         if HOOKAH_rect.colliderect(apple.rect):
             apples.remove(apple)
             heal_sound.play(0)
-            if hp > 0:
+            if hp < 3:
                 hp += 1
     for badapple in badapples:
         if HOOKAH_rect.colliderect(badapple.rect):
@@ -216,18 +220,14 @@ class BadApple(pg.sprite.Sprite):
             # теперь не перебрасываем вверх, а удаляем из всех групп
             self.kill()
 
-
 apples = pg.sprite.Group()
 badapples = pg.sprite.Group()
 
 bg_y = 0
-
-green_timer = pg.USEREVENT + 1
-pg.time.set_timer(green_timer, 100)  # частота появления гнилых яблок
 bad_timer = pg.USEREVENT + 1
-good_timer = bad_timer + 100 #xd
-pg.time.set_timer(bad_timer, 1000) # частота появления гнилых яблок
-pg.time.set_timer(good_timer, 10000) # частота появления зеленых яблок
+good_timer = bad_timer + 100  # xd
+pg.time.set_timer(bad_timer, 1000)  # частота появления гнилых яблок
+pg.time.set_timer(good_timer, 10000)  # частота появления зеленых яблок
 
 Alive = True
 # главный цикл
@@ -247,13 +247,8 @@ while run:
 
             elif i.type == bad_timer:
                 BadApple(randrange(106, 533, 205), BAD_APPLES_NEW, badapples)
-            elif i.type == green_timer:
-                Apple(randrange(106, 533, 205), GREEN_APPLES_NEW, apples)
-
-
             elif i.type == good_timer:
-                Apple(randrange(106, 533, 205), GREEN_APPLES_NEW, apples)
-
+                Apple(randrange(106, 533, 205), RED_APPLES_NEW, apples)
 
         keys = pg.key.get_pressed()
         if keys[pg.K_a] and x > 5:
