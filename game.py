@@ -167,7 +167,18 @@ def fade_out(surface, fade_speed, x, y, ):  # Функция для плавно
         clock.tick(60)
         pg.time.delay(16)
 
+def fade_in(surface, fade_speed, x, y, ):  # Функция для плавного появления
+    alpha = 0
+    while alpha < 255:
+        alpha += fade_speed
+        surface.set_alpha(alpha)
+        sc.fill((0, 0, 0))
+        sc.blit(surface, (x, y))
+        pg.display.update()
+        clock.tick(60)
+        pg.time.delay(16)
 
+fade_in(logo, 5, 150, 150)
 fade_out(logo, 5, 150, 150)  # затухание логотипа вначале (поверхность, скорость изменения альфа, координаты х у)
 
 sc.blit(bg, (0, 0))  # (фон для менюшки, лого в нижнем углу и текст)
