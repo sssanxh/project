@@ -4,12 +4,17 @@ import pygame_gui as pg_gui
 import pygame as pg
 
 pg.init()
-pg.time.set_timer(pg.USEREVENT, 10000)  # ЧАСТОТА ПОЯВЛЕНИЯ ЯБЛОК
+
+green_timer = pg.USEREVENT + 1
+pg.time.set_timer(green_timer, 10000)  # частота появления зеленых яблок
+pg.time.set_timer(pg.USEREVENT, 1500)  # частота появления гнилых яблок
 
 sc = pg.display.set_mode((620, 620))
 pg.display.set_caption("КАЛЬЯННЫЙ ГОНЩИК: ВОЗМЕЗДИЕ")
 
-BAD_APPLES = ('sprites/Bad_Apple/1.png', 'sprites/Bad_Apple/2.png')
+BAD_APPLES = ('sprites/Bad_Apple/1.png', 'sprites/Bad_Apple/2.png',
+              'sprites/Bad_Apple/3.png', 'sprites/Bad_Apple/4.png',
+              'sprites/Bad_Apple/5.png', 'sprites/Bad_Apple/6.png')
 BAD_APPLES_NEW = [pg.transform.scale(pg.image.load(i), (150, 150)) for i in BAD_APPLES]
 
 GREEN_APPLES = ('sprites/Green_Apple/1.png', 'sprites/Green_Apple/2.png',
@@ -125,7 +130,7 @@ def fade_out(surface, fade_speed, x, y, ):  # Функция для плавно
         pg.time.delay(16)
 
 
-fade_out(logo, 1, 150, 150)  # затухание логотипа вначале (поверхность, скорость изменения альфа, координаты х у)
+fade_out(logo, 2, 150, 150)  # затухание логотипа вначале (поверхность, скорость изменения альфа, координаты х у)
 
 sc.blit(bg, (0, 0))  # (фон для менюшки, лого в нижнем углу и текст)
 sc.blit(pg.transform.scale(logomini, (165, 165)), (410, 450))
@@ -162,7 +167,7 @@ class Apple(pg.sprite.Sprite):
         # добавляем в группу
         self.add(group)
         # у машин будет разная скорость
-        self.speed = randint(3, 4)
+        self.speed = 3
 
 
     def update(self):
@@ -178,7 +183,9 @@ class Apple(pg.sprite.Sprite):
 class BadApple(pg.sprite.Sprite):
     def __init__(self, x, surf, group):
         pg.sprite.Sprite.__init__(self)
-        self.image = surf
+        self.images = surf.copy()
+        self.cur = 0
+        self.image = self.images[self.cur]
         self.rect = self.image.get_rect(center=(x, 0))
         # добавляем в группу
         self.add(group)
@@ -186,6 +193,8 @@ class BadApple(pg.sprite.Sprite):
         self.speed = randint(3, 4)
 
     def update(self):
+        self.cur = (self.cur + 1) % len(self.images)
+        self.image = self.images[self.cur]
         if self.rect.y < 620:
             self.rect.y += self.speed
         else:
@@ -214,9 +223,10 @@ while run:
             run = False
             pg.quit()
 
-        elif i.type == pg.USEREVENT:
+        elif i.type == green_timer:
             Apple(randrange(106, 533, 205), GREEN_APPLES_NEW, apples)
-            BadApple(randrange(106, 533, 205), BAD_APPLES_NEW[randint(0, 1)], badapples)
+        elif i.type == pg.USEREVENT:
+            BadApple(randrange(106, 533, 205), BAD_APPLES_NEW, badapples)
 
     keys = pg.key.get_pressed()
     if keys[pg.K_a] and x > 5:
