@@ -110,15 +110,12 @@ def drawWindow():
 # инциализуруем переменные для pg_gui и вводим кнопки нашего меню
 manager = pg_gui.UIManager((620, 620))
 
-
 hello_button = pg_gui.elements.UIButton(relative_rect=pg.Rect((40, 200), (200, 50)),
                                         text='НАЧАТЬ БЕЗУМИЕ',
                                         manager=manager)
 exit_button = pg_gui.elements.UIButton(relative_rect=pg.Rect((40, 350), (200, 50)),
                                        text='Я БОЮСЬ',
                                        manager=manager)
-
-
 
 font = pg.font.SysFont('Fixedsys', size=32)
 
@@ -129,35 +126,10 @@ def draw_text(text, font, text_col, x, y):
 
 
 # экран проигрыша
-def loseWindow():
-
-    sc.fill((0,0,0))
-    huager = pg_gui.UIManager((620, 620))
-    hello_button2 = pg_gui.elements.UIButton(relative_rect=pg.Rect((40, 200), (200, 50)),
-                                            text='ЕЩЁ РАЗ НЕ ***',
-                                            manager=huager)
-    exit_button2 = pg_gui.elements.UIButton(relative_rect=pg.Rect((40, 350), (200, 50)),
-                                            text='Я БОЮСЬ',
-                                            manager=huager)
-    dead = True
-    while dead:
-        time_delta2 = clock.tick(60) / 1000
-        for i in pg.event.get():
-            if i.type == pg.QUIT:
-                quit()
-            if i.type == pg.KEYDOWN:
-                if i.key == pg.K_ESCAPE:
-                    quit()
-            if i.type == pg.MOUSEBUTTONDOWN:
-                if exit_button2.rect.collidepoint(i.pos):
-                    quit()
-                if hello_button2.rect.collidepoint(i.pos):
-                    pass
-
-            huager.process_events(i)
-        huager.update(time_delta2)
-        huager.draw_ui(sc)
-        pg.display.update()
+def losewindow():
+    sc.fill((0, 0, 0))
+    draw_text('ебать ты лох', font, (255, 255, 255), 40, 50)
+    draw_text('по новой', font, (255, 255, 255), 40, 80)
 
 
 def fade_out(surface, fade_speed, x, y, ):  # Функция для плавного исчезновения
@@ -249,7 +221,8 @@ badapples = pg.sprite.Group()
 
 bg_y = 0
 
-
+green_timer = pg.USEREVENT + 1
+pg.time.set_timer(green_timer, 100)  # частота появления гнилых яблок
 bad_timer = pg.USEREVENT + 1
 good_timer = bad_timer + 100 #xd
 pg.time.set_timer(bad_timer, 1000) # частота появления гнилых яблок
@@ -273,6 +246,9 @@ while run:
 
             elif i.type == bad_timer:
                 BadApple(randrange(106, 533, 205), BAD_APPLES_NEW, badapples)
+            elif i.type == green_timer:
+                Apple(randrange(106, 533, 205), GREEN_APPLES_NEW, apples)
+
 
             elif i.type == good_timer:
                 Apple(randrange(106, 533, 205), GREEN_APPLES_NEW, apples)
@@ -300,11 +276,8 @@ while run:
         if keys[pg.K_s] and y < 600 - height - 5:
             y += speed
         drawWindow()
-
     else:
-        loseWindow()
-
-
+        losewindow()
 
     pg.display.update()
     pg.time.delay(0)
