@@ -28,6 +28,9 @@ HOOKAH_NEW = [pg.transform.scale(pg.image.load(i), (200, 200)) for i in HOOKAH]
 HOOKAH_LEFT = pg.transform.scale(pg.image.load('sprites/Hookah/left.png'), (200, 200))
 HOOKAH_RIGHT = pg.transform.scale(pg.image.load('sprites/Hookah/right.png'), (200, 200))
 
+LEVELS_BG = ('bg1.jpg', 'bg2.jpg', 'bg3.jpg')
+LEVELS_MUSIC = ('sounds/bg_lvl1.mp3', 'sounds/bg_lvl2.mp3', 'sounds/bg_lvl3.mp3')
+
 """ВРЕМЕННО ПОСТАВИЛ BG2!!!"""
 bg = pg.image.load('bg2.jpg')
 
@@ -37,11 +40,12 @@ logo = pg.transform.scale(logo, (300, 300))
 logomini = logo.copy()
 
 bg_music1 = pg.mixer.Sound('sounds/bg_lvl1.mp3')
-menu_music = pg.mixer.Sound('sounds/menulol.mp3')
+menu_music = pg.mixer.Sound('sounds/menu.mp3')
 hit_sound = pg.mixer.Sound('sounds/hit.mp3')
 heal_sound = pg.mixer.Sound('sounds/heal.mp3')
+lose = pg.mixer.Sound('sounds/lose.mp3')
 menu_music.play(-1)
-menu_music.set_volume(0.5)
+menu_music.set_volume(0.05)
 bg_music1.set_volume(0.05)
 hit_sound.set_volume(0.09)
 heal_sound.set_volume(0.09)
@@ -53,18 +57,20 @@ y = 450
 width = 30
 height = 30
 speed = 2
+level = 1
 
 left = False
 right = False
 stay = True
 green_apple_stay = True
 animCount = 0
-animCount2 = 0
 run = None
 
 
 def drawWindow():
     global animCount
+    global Alive
+    hits = 0
     # sc.blit(bg, (0, bg_y))
     # sc.blit(bg, (0, bg_y + 620))
     if animCount + 1 >= 30:
@@ -87,6 +93,8 @@ def drawWindow():
         if HOOKAH_rect.colliderect(badapple.rect):
             badapples.remove(badapple)
             hit_sound.play(0)
+            Alive = False
+            lose.play(-1)
 
     apples.draw(sc)
     badapples.draw(sc)
@@ -111,6 +119,13 @@ font = pg.font.SysFont('Fixedsys', size=32)
 def draw_text(text, font, text_col, x, y):
     img = font.render(text, False, text_col)
     sc.blit(img, (x, y))
+
+
+# экран проигрыша
+def losewindow():
+    sc.fill((0, 0, 0))
+    draw_text('ебать ты лох', font, (255, 255, 255), 40, 50)
+    draw_text('по новой', font, (255, 255, 255), 40, 80)
 
 
 def fade_out(surface, fade_speed, x, y, ):  # Функция для плавного исчезновения
@@ -164,7 +179,6 @@ class Apple(pg.sprite.Sprite):
         # у машин будет разная скорость
         self.speed = 3
 
-
     def update(self):
         self.cur = (self.cur + 1) % len(self.images)
         self.image = self.images[self.cur]
@@ -204,56 +218,51 @@ bg_y = 0
 
 bad_timer = pg.USEREVENT + 1
 pg.time.set_timer(bad_timer, 1500)  # частота появления гнилых яблок
-green_timer = pg.USEREVENT + 1
-pg.time.set_timer(green_timer, 9000)  # частота появления зеленых яблок
-double_timer = pg.USEREVENT + 1
-pg.time.set_timer(double_timer, 20000) # частота появления двойного яблочка
 
-
-#run = True
+Alive = True
 # главный цикл
 while run:
+    if Alive:
+        # Движение заднего фона
+        sc.blit(bg, (0, bg_y))
+        sc.blit(bg, (0, bg_y - 620))
+        bg_y += 2
+        if bg_y == 620:
+            bg_y = 0
 
-    """Движение заднего фона"""
-    sc.blit(bg, (0, bg_y))
-    sc.blit(bg, (0, bg_y - 620))
-    bg_y += 2
-    if bg_y == 620:
-        bg_y = 0
+        for i in pg.event.get():
+            if i.type == pg.QUIT:
+                run = False
+                pg.quit()
 
-    for i in pg.event.get():
-        if i.type == pg.QUIT:
-            run = False
-            pg.quit()
+            elif i.type == bad_timer:
+                BadApple(randrange(106, 533, 205), BAD_APPLES_NEW, badapples)
 
-        elif i.type == green_timer:
-            Apple(randrange(106, 533, 205), GREEN_APPLES_NEW, apples)
-        elif i.type == bad_timer:
-            BadApple(randrange(106, 533, 205), BAD_APPLES_NEW, badapples)
-
-    keys = pg.key.get_pressed()
-    if keys[pg.K_a] and x > 5:
-        left = True
-        right = False
-        stay = False
-        x -= speed + 4
-        animCount = 0
-    elif keys[pg.K_d] and x < 450 - width - 5:
-        left = False
-        right = True
-        stay = False
-        x += speed + 4
-        animCount = 0
+        keys = pg.key.get_pressed()
+        if keys[pg.K_a] and x > 5:
+            left = True
+            right = False
+            stay = False
+            x -= speed + 4
+            animCount = 0
+        elif keys[pg.K_d] and x < 450 - width - 5:
+            left = False
+            right = True
+            stay = False
+            x += speed + 4
+            animCount = 0
+        else:
+            left = False
+            right = False
+            stay = True
+        if keys[pg.K_w] and y > 5:
+            y -= speed
+        if keys[pg.K_s] and y < 600 - height - 5:
+            y += speed
+        drawWindow()
     else:
-        left = False
-        right = False
-        stay = True
-    if keys[pg.K_w] and y > 5:
-        y -= speed
-    if keys[pg.K_s] and y < 600 - height - 5:
-        y += speed
+        losewindow()
 
-    drawWindow()
     pg.display.update()
     pg.time.delay(0)
     clock.tick(60)
