@@ -5,9 +5,7 @@ import pygame as pg
 
 pg.init()
 
-green_timer = pg.USEREVENT + 1
-pg.time.set_timer(green_timer, 10000)  # частота появления зеленых яблок
-pg.time.set_timer(pg.USEREVENT, 1500)  # частота появления гнилых яблок
+pg.time.set_timer(pg.USEREVENT, 10000)
 
 sc = pg.display.set_mode((620, 620))
 pg.display.set_caption("КАЛЬЯННЫЙ ГОНЩИК: ВОЗМЕЗДИЕ")
@@ -67,13 +65,10 @@ run = None
 
 def drawWindow():
     global animCount
-    global animCount2
     # sc.blit(bg, (0, bg_y))
     # sc.blit(bg, (0, bg_y + 620))
     if animCount + 1 >= 30:
         animCount = 0
-    if animCount2 + 1 >= 30:
-        animCount2 = 0
     if stay:
         sc.blit(HOOKAH_NEW[animCount // 5], (x, y))
         animCount += 1
@@ -130,10 +125,10 @@ def fade_out(surface, fade_speed, x, y, ):  # Функция для плавно
         pg.time.delay(16)
 
 
-fade_out(logo, 2, 150, 150)  # затухание логотипа вначале (поверхность, скорость изменения альфа, координаты х у)
+fade_out(logo, 5, 150, 150)  # затухание логотипа вначале (поверхность, скорость изменения альфа, координаты х у)
 
 sc.blit(bg, (0, 0))  # (фон для менюшки, лого в нижнем углу и текст)
-sc.blit(pg.transform.scale(logomini, (165, 165)), (410, 450))
+sc.blit(pg.transform.scale(logomini, (165, 165)), (430, 450))
 draw_text('КАЛЬЯННЫЙ ГОНЩИК', font, (255, 255, 255), 40, 50)
 
 menu = True  # цикл для gui менюшки
@@ -207,7 +202,15 @@ badapples = pg.sprite.Group()
 
 bg_y = 0
 
-# run = True
+bad_timer = pg.USEREVENT + 1
+pg.time.set_timer(bad_timer, 1500)  # частота появления гнилых яблок
+green_timer = pg.USEREVENT + 1
+pg.time.set_timer(green_timer, 9000)  # частота появления зеленых яблок
+double_timer = pg.USEREVENT + 1
+pg.time.set_timer(double_timer, 20000) # частота появления двойного яблочка
+
+
+run = True
 # главный цикл
 while run:
 
@@ -233,13 +236,13 @@ while run:
         left = True
         right = False
         stay = False
-        x -= speed + 2
+        x -= speed + 4
         animCount = 0
     elif keys[pg.K_d] and x < 450 - width - 5:
         left = False
         right = True
         stay = False
-        x += speed + 2
+        x += speed + 4
         animCount = 0
     else:
         left = False
