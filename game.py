@@ -20,6 +20,10 @@ GREEN_APPLES = ('sprites/Green_Apple/1.png', 'sprites/Green_Apple/2.png',
                 'sprites/Green_Apple/5.png', 'sprites/Green_Apple/6.png')
 GREEN_APPLES_NEW = [pg.transform.scale(pg.image.load(i), (150, 150)) for i in GREEN_APPLES]
 
+RED_APPLES = ('sprites/Red_Apple/1.png', 'sprites/Red_Apple/2.png',
+              'sprites/Red_Apple/3.png')
+RED_APPLES_NEW = [pg.transform.scale(pg.image.load(i), (150, 150)) for i in RED_APPLES]
+
 HOOKAH = ('sprites/Hookah/1.png', 'sprites/Hookah/2.png', 'sprites/Hookah/3.png',
           'sprites/Hookah/4.png', 'sprites/Hookah/5.png', 'sprites/Hookah/6.png',)
 HOOKAH_NEW = [pg.transform.scale(pg.image.load(i), (200, 200)) for i in HOOKAH]
@@ -31,22 +35,24 @@ LEVELS_BG = ('bg1.jpg', 'bg2.jpg', 'bg3.jpg')
 LEVELS_MUSIC = ('sounds/bg_lvl1.mp3', 'sounds/bg_lvl2.mp3', 'sounds/bg_lvl3.mp3')
 
 """ВРЕМЕННО ПОСТАВИЛ BG2!!!"""
-bg = pg.image.load('bg2.jpg')
+bg = pg.image.load('bg1.jpg')
 
 bg = pg.transform.scale(bg, (620, 620))
 logo = pg.image.load('logo.png')
 logo = pg.transform.scale(logo, (300, 300))
 logomini = logo.copy()
 
-bg_music1 = pg.mixer.Sound('sounds/bg_lvl1.mp3')
+bg_music1 = pg.mixer.Sound('sounds/bg_lvl1lol.mp3')
 menu_music = pg.mixer.Sound('sounds/menu.mp3')
 hit_sound = pg.mixer.Sound('sounds/hit.mp3')
 heal_sound = pg.mixer.Sound('sounds/heal.mp3')
+exp_sound = pg.mixer.Sound('sounds/exp.mp3')
 lose = pg.mixer.Sound('sounds/lose.mp3')
 menu_music.play(-1)
 menu_music.set_volume(0.05)
 bg_music1.set_volume(0.05)
 hit_sound.set_volume(0.09)
+exp_sound.set_volume(0.09)
 heal_sound.set_volume(0.09)
 
 clock = pg.time.Clock()
@@ -58,19 +64,22 @@ height = 30
 speed = 2
 level = 1
 
+level_up = False
 left = False
 right = False
 stay = True
-green_apple_stay = True
 animCount = 0
 run = None
-hits = 0
+hp = 3
+exp = 0
 
 
 def drawWindow():
     global animCount
     global Alive
-    global hits
+    global level_up
+    global hp
+    global exp
     # sc.blit(bg, (0, bg_y))
     # sc.blit(bg, (0, bg_y + 620))
     if animCount + 1 >= 30:
@@ -85,24 +94,35 @@ def drawWindow():
             sc.blit(HOOKAH_RIGHT, (x, y))
 
     HOOKAH_rect = pg.Rect(x + 60, y + 20, 60, 30)
-    for apple in apples:
-        if HOOKAH_rect.colliderect(apple.rect):
-            apples.remove(apple)
+    for exp_apple in exp_apples:
+        if HOOKAH_rect.colliderect(exp_apple.rect):
+            exp_apples.remove(exp_apple)
+            exp_sound.play(0)
+            if exp < 5:
+                exp += 1
+            if exp == 5:
+                level_up = True
+
+    for heal_apple in heal_apples:
+        if HOOKAH_rect.colliderect(heal_apple.rect):
+            heal_apples.remove(heal_apple)
             heal_sound.play(0)
-            hits -= 1
-    for badapple in badapples:
-        if HOOKAH_rect.colliderect(badapple.rect):
-            badapples.remove(badapple)
+            if hp < 3:
+                hp += 1
+    for bad_apple in bad_apples:
+        if HOOKAH_rect.colliderect(bad_apple.rect):
+            bad_apples.remove(bad_apple)
             hit_sound.play(0)
             # дается три жизни
-            hits += 1
-            if hits == 3:
+            hp -= 1
+            if hp == 0:
                 Alive = False
                 bg_music1.stop()
                 lose.play(-1)
 
-    apples.draw(sc)
-    badapples.draw(sc)
+    heal_apples.draw(sc)
+    exp_apples.draw(sc)
+    bad_apples.draw(sc)
 
     pg.display.update()
 
@@ -127,12 +147,11 @@ def draw_text(text, font, text_col, x, y):
 
 # экран проигрыша
 def losewindow():
-
-    sc.fill((0,0,0))
+    sc.fill((0, 0, 0))
     huager = pg_gui.UIManager((620, 620))
     hello_button2 = pg_gui.elements.UIButton(relative_rect=pg.Rect((40, 200), (200, 50)),
-                                            text='ЕЩЁ РАЗ НЕ ***',
-                                            manager=huager)
+                                             text='ЕЩЁ РАЗ НЕ ***',
+                                             manager=huager)
     exit_button2 = pg_gui.elements.UIButton(relative_rect=pg.Rect((40, 350), (200, 50)),
                                             text='Я БОЮСЬ',
                                             manager=huager)
@@ -156,6 +175,7 @@ def losewindow():
         huager.draw_ui(sc)
         pg.display.update()
 
+
 def fade_out(surface, fade_speed, x, y, ):  # Функция для плавного исчезновения
     alpha = 255
     while alpha > 0:
@@ -166,6 +186,7 @@ def fade_out(surface, fade_speed, x, y, ):  # Функция для плавно
         pg.display.update()
         clock.tick(60)
         pg.time.delay(16)
+
 
 def fade_in(surface, fade_speed, x, y, ):  # Функция для плавного появления
     alpha = 0
@@ -178,8 +199,9 @@ def fade_in(surface, fade_speed, x, y, ):  # Функция для плавно�
         clock.tick(60)
         pg.time.delay(16)
 
-fade_in(logo, 5, 150, 150)
-fade_out(logo, 5, 150, 150)  # затухание логотипа вначале (поверхность, скорость изменения альфа, координаты х у)
+
+fade_in(logo, 1, 150, 150)
+fade_out(logo, 4, 150, 150)  # затухание логотипа вначале (поверхность, скорость изменения альфа, координаты х у)
 
 sc.blit(bg, (0, 0))  # (фон для менюшки, лого в нижнем углу и текст)
 sc.blit(pg.transform.scale(logomini, (165, 165)), (430, 450))
@@ -207,7 +229,29 @@ while menu:
     pg.display.update()
 
 
-class Apple(pg.sprite.Sprite):
+class HealApple(pg.sprite.Sprite):
+    def __init__(self, x, surf, group):
+        pg.sprite.Sprite.__init__(self)
+        self.images = surf.copy()
+        self.cur = 0
+        self.image = self.images[self.cur]
+        self.rect = self.image.get_rect(center=(x, 0))
+        # добавляем в группу
+        self.add(group)
+        # у машин будет разная скорость
+        self.speed = 3
+
+    def update(self):
+        self.cur = (self.cur + 1) % len(self.images)
+        self.image = self.images[self.cur]
+        if self.rect.y < 620:
+            self.rect.y += self.speed
+        else:
+            # теперь не перебрасываем вверх, а удаляем из всех групп
+            self.kill()
+
+
+class ExpApple(pg.sprite.Sprite):
     def __init__(self, x, surf, group):
         pg.sprite.Sprite.__init__(self)
         self.images = surf.copy()
@@ -251,16 +295,17 @@ class BadApple(pg.sprite.Sprite):
             self.kill()
 
 
-apples = pg.sprite.Group()
-badapples = pg.sprite.Group()
+heal_apples = pg.sprite.Group()
+exp_apples = pg.sprite.Group()
+bad_apples = pg.sprite.Group()
 
 bg_y = 0
-
-
 bad_timer = pg.USEREVENT + 1
-good_timer = bad_timer + 100 #xd
-pg.time.set_timer(bad_timer, 1000) # частота появления гнилых яблок
-pg.time.set_timer(good_timer, 10000) # частота появления зеленых яблок
+red_timer = bad_timer + 100  # xd
+green_timer = bad_timer + 1000  # xd
+pg.time.set_timer(bad_timer, 1000)  # частота появления гнилых яблок
+pg.time.set_timer(red_timer, 8000)  # частота появления красных яблок
+pg.time.set_timer(green_timer, 10000)  # частота появления зеленых яблок
 
 Alive = True
 # главный цикл
@@ -279,13 +324,11 @@ while run:
                 pg.quit()
 
             elif i.type == bad_timer:
-                BadApple(randrange(106, 533, 205), BAD_APPLES_NEW, badapples)
-
-
-
-            elif i.type == good_timer:
-                Apple(randrange(106, 533, 205), GREEN_APPLES_NEW, apples)
-
+                BadApple(randrange(106, 533, 205), BAD_APPLES_NEW, bad_apples)
+            elif i.type == red_timer:
+                HealApple(randrange(106, 533, 205), RED_APPLES_NEW, heal_apples)
+            elif i.type == green_timer:
+                ExpApple(randrange(106, 533, 205), GREEN_APPLES_NEW, exp_apples)
 
         keys = pg.key.get_pressed()
         if keys[pg.K_a] and x > 5:
@@ -311,9 +354,12 @@ while run:
         drawWindow()
     else:
         losewindow()
-
+    if level_up == True:
+        sc.fill((0, 0, 0))
+        draw_text('уровень 1 пройден(продолжение следует)', font, (255, 255, 255), 40, 50)
     pg.display.update()
     pg.time.delay(0)
     clock.tick(60)
-    apples.update()
-    badapples.update()
+    heal_apples.update()
+    exp_apples.update()
+    bad_apples.update()
