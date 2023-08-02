@@ -54,6 +54,7 @@ bg_music1.set_volume(0.05)
 hit_sound.set_volume(0.09)
 exp_sound.set_volume(0.09)
 heal_sound.set_volume(0.09)
+lose.set_volume(0.09)
 
 clock = pg.time.Clock()
 
