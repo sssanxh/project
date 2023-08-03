@@ -211,10 +211,10 @@ def drawWindow():
 # инциализуруем переменные для pg_gui и вводим кнопки нашего меню
 manager = pg_gui.UIManager((620, 620))
 
-hello_button = pg_gui.elements.UIButton(relative_rect=pg.Rect((15, 200), (175, 50)),
+hello_button = pg_gui.elements.UIButton(relative_rect=pg.Rect((15, 250), (175, 50)),
                                         text='НАЧАТЬ БЕЗУМИЕ',
                                         manager=manager)
-exit_button = pg_gui.elements.UIButton(relative_rect=pg.Rect((15, 350), (175, 50)),
+exit_button = pg_gui.elements.UIButton(relative_rect=pg.Rect((15, 325), (175, 50)),
                                        text='Я БОЮСЬ',
                                        manager=manager)
 
@@ -268,7 +268,7 @@ def pause( ):
         pg.display.update()
 
 
-
+lose_img = pg.image.load('loseimg.png')
 # экран проигрыша
 def losewindow():  # доделать функцию
     global Alive
@@ -279,10 +279,10 @@ def losewindow():  # доделать функцию
     global level
     sc.fill((0, 0, 0))
     huager = pg_gui.UIManager((620, 620))
-    hello_button2 = pg_gui.elements.UIButton(relative_rect=pg.Rect((40, 200), (200, 50)),
+    hello_button2 = pg_gui.elements.UIButton(relative_rect=pg.Rect((100, 400), (200, 50)),
                                              text='ЕЩЕ РАЗ',
                                              manager=huager)
-    exit_button2 = pg_gui.elements.UIButton(relative_rect=pg.Rect((40, 350), (200, 50)),
+    exit_button2 = pg_gui.elements.UIButton(relative_rect=pg.Rect((320, 400), (200, 50)),
                                             text='Я БОЮСЬ',
                                             manager=huager)
 
@@ -305,13 +305,14 @@ def losewindow():  # доделать функцию
                     Alive = True
                     dead = False
                     hp = 3
-                    exp = 0
+                    exp = 3
                     x = 220
                     y = 450
                     lose.stop()
                     bg_music1.play(-1)
             huager.process_events(i)
         huager.update(time_delta2)
+        sc.blit(lose_img, (0, 0))
         huager.draw_ui(sc)
         pg.display.update()
 
@@ -345,6 +346,7 @@ sc.blit(bg, (0, 0))  # (фон для менюшки, лого в нижнем �
 sc.blit(pg.transform.scale(logomini, (165, 165)), (430, 450))
 draw_text('КАЛЬЯННЫЙ ГОНЩИК', font, (255, 255, 255), 15, 110)
 
+menu_img = pg.image.load('menu.png')
 # цикл меню, который работает через pygame_gui, при нажатии кнопки hello_button запускает игровой цикл
 menu = True  # цикл для gui менюшки
 while menu:
@@ -362,6 +364,7 @@ while menu:
                 menu = False
                 run = False
         manager.process_events(i)
+    sc.blit(menu_img, (0, 0))
     manager.update(time_delta)
     manager.draw_ui(sc)
     pg.display.update()
