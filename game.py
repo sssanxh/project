@@ -35,7 +35,6 @@ LEVELS_BG = ('bg1.jpg', 'bg2.jpg', 'bg3.jpg')
 LEVELS_MUSIC = ('sounds/bg_lvl1.mp3', 'sounds/bg_lvl2.mp3', 'sounds/bg_lvl3.mp3')
 
 bg = pg.image.load('bg1.jpg')
-
 bg = pg.transform.scale(bg, (620, 620))
 logo = pg.image.load('logo.png')
 logo = pg.transform.scale(logo, (300, 300))
@@ -76,7 +75,7 @@ hp_image = pg.image.load('sprites/HP_and_EXP/hp.png')
 hp_bg_image = pg.image.load('sprites/HP_and_EXP/hpbg.png')
 hp_name = pg.image.load('sprites/HP_and_EXP/healthname.png')
 
-exp = 0
+exp = 4
 exp_image = pg.image.load('sprites/HP_and_EXP/exp.png')
 exp_name = pg.image.load('sprites/HP_and_EXP/expname.png')
 exp_bg_image = pg.image.load('sprites/HP_and_EXP/expbg.png')
@@ -132,11 +131,9 @@ def BgAnimation():
 def drawWindow():
     global animCount
     global Alive
-    global level_up
+    global level
     global hp
     global exp
-    # sc.blit(bg, (0, bg_y))
-    # sc.blit(bg, (0, bg_y + 620))
     if animCount + 1 >= 30:
         animCount = 0
     if stay:
@@ -160,7 +157,8 @@ def drawWindow():
             if exp < 5:
                 exp += 1
             if exp == 5:
-                level_up = True
+                if level < 3:
+                    level += 1
 
     for heal_apple in heal_apples:
         #pg.draw.rect(sc, (255, 0, 0), heal_apple, 2)  # тестовый вывод хитбокса хил яблока
@@ -430,38 +428,43 @@ Alive = True
 # главный цикл
 while run:
     if Alive:
-        BgAnimation()
-        for i in pg.event.get():
-            LEVEL1()
-        keys = pg.key.get_pressed()
-        if keys[pg.K_a] and x > 5:
-            left = True
-            right = False
-            stay = False
-            x -= speed + 4
-            animCount = 0
-        elif keys[pg.K_d] and x < 450 - width - 5:
-            left = False
-            right = True
-            stay = False
-            x += speed + 4
-            animCount = 0
+        if level == 1:
+            BgAnimation()
+            for i in pg.event.get():
+                LEVEL1()
+            keys = pg.key.get_pressed()
+            if keys[pg.K_a] and x > 5:
+                left = True
+                right = False
+                stay = False
+                x -= speed + 4
+                animCount = 0
+            elif keys[pg.K_d] and x < 450 - width - 5:
+                left = False
+                right = True
+                stay = False
+                x += speed + 4
+                animCount = 0
+            else:
+                left = False
+                right = False
+                stay = True
+            if keys[pg.K_w] and y > 5:
+                y -= speed
+            if keys[pg.K_s] and y < 600 - height - 5:
+                y += speed
+            if keys[pg.K_ESCAPE]:
+                pause()
+            drawWindow()
         else:
-            left = False
-            right = False
-            stay = True
-        if keys[pg.K_w] and y > 5:
-            y -= speed
-        if keys[pg.K_s] and y < 600 - height - 5:
-            y += speed
-        if keys[pg.K_ESCAPE]:
-            pause()
-        drawWindow()
+            bg = pg.image.load('bg3.jpg')
+            BgAnimation()
+            bg_music1.stop()
+            draw_text('ВАС ОЖИДАЕТ АД', font, (255, 255, 255), 15, 110)
+
     else:
         losewindow()
-    if level_up:
-        sc.fill((0, 0, 0))
-        draw_text('уровень 1 пройден(продолжение следует)', font, (255, 255, 255), 40, 50)
+
     pg.display.update()
     pg.time.delay(0)
     clock.tick(60)
