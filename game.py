@@ -65,7 +65,6 @@ height = 30
 speed = 2
 level = 1
 
-level_up = False
 left = False
 right = False
 stay = True
@@ -164,10 +163,10 @@ def drawWindow():
 
     HOOKAH_rect = pg.Rect(x + 65, y + 45, 60, 75)
 
-    pg.draw.rect(sc, (255, 0, 0), HOOKAH_rect, 2) #тестовый вывод хитбокса кальяна
+    #pg.draw.rect(sc, (255, 0, 0), HOOKAH_rect, 2) #тестовый вывод хитбокса кальяна
 
     for exp_apple in exp_apples:
-        #pg.draw.rect(sc, (255, 0, 0), exp_apple, 2) #тестовый вывод хитбокса зеленого яблока
+        pg.draw.rect(sc, (255, 0, 0), exp_apple, 2) #тестовый вывод хитбокса зеленого яблока
         if HOOKAH_rect.colliderect(exp_apple.rect):
             exp_apples.remove(exp_apple)
             exp_sound.play(0)
@@ -274,6 +273,7 @@ def losewindow():  # доделать функцию
     global exp
     global x
     global y
+    global level
     sc.fill((0, 0, 0))
     huager = pg_gui.UIManager((620, 620))
     hello_button2 = pg_gui.elements.UIButton(relative_rect=pg.Rect((40, 200), (200, 50)),
@@ -466,6 +466,13 @@ def LEVEL2():
     elif i.type == green_timer:
         ExpApple(randrange(106, 533, 205), GREEN_APPLES_NEW, exp_apples)
 
+def LEVEL3():
+    global run
+    if i.type == pg.QUIT:
+        run = False
+        pg.quit()
+
+
 Alive = True
 # главный цикл
 while run:
@@ -482,16 +489,14 @@ while run:
             bg = pg.image.load('bg2.jpg')
             BgAnimation()
             drawWindow()
-            draw_text('второй лвл', font, (255, 255, 255), 15, 110)
-        else:
+        elif level == 3:
+            for i in pg.event.get():
+                LEVEL3()
             bg = pg.image.load('bg3.jpg')
             BgAnimation()
-            bg_music1.stop()
-            draw_text('боссфайт', font, (255, 255, 255), 15, 110)
-            bg_music3.play(-1)
-
-
+            drawWindow()
     else:
+        level = 1
         losewindow()
 
     pg.display.update()
