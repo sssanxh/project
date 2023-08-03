@@ -172,7 +172,7 @@ def drawWindow():
             if exp < 5:
                 exp += 1
             if exp == 5:
-                if level < 3:
+                if level < 4:
                     level += 1
                 if level == 2:
                     bg_music.stop()
@@ -487,7 +487,13 @@ pg.time.set_timer(green_timer, 10000)  # частота появления зе�
 tolvl1_img = pg.image.load('tolvl1.png')
 tolvl2_img = pg.image.load('tolvl2.png')
 tolvl3_img = pg.image.load('tolvl3.png')
+winscreen = pg.image.load('winscreen.png')
 tolvl1 = tolvl2 = tolvl3 = 1
+
+exit_button3 = pg_gui.elements.UIButton(relative_rect=pg.Rect((15, 325), (175, 50)),
+                                                    text='ПРОЩАЙ, КАЛИК!',
+                                                    manager=manager)
+
 def LEVEL1():
     if i.type == pg.QUIT:
         pg.quit()
@@ -501,17 +507,24 @@ def LEVEL1():
 def LEVEL2():
     if i.type == pg.QUIT:
         pg.quit()
-    elif i.type == bad_coom_timer:
-        BadCoomar(randrange(106, 320, 205), BAD_COOMARS_NEW, bad_coomars)
+    # elif i.type == bad_coom_timer:
+    #     BadCoomar(randrange(106, 320, 205), BAD_COOMARS_NEW, bad_coomars)
     elif i.type == very_bad_timer:
         BadApple(randrange(106, 533, 205), BAD_APPLES_NEW, bad_apples)
     elif i.type == green_timer:
         ExpApple(randrange(106, 533, 205), GREEN_APPLES_NEW, exp_apples)
+    elif i.type == red_timer:
+        HealApple(randrange(106, 533, 205), RED_APPLES_NEW, heal_apples)
 
 def LEVEL3():
     if i.type == pg.QUIT:
         pg.quit()
+    elif i.type == green_timer:
+        ExpApple(randrange(106, 533, 205), GREEN_APPLES_NEW, exp_apples)
 
+def WIN():
+    if i.type == pg.QUIT:
+        pg.quit()
 
 Alive = True
 # главный цикл
@@ -545,8 +558,14 @@ while run:
                 LEVEL3()
             BgAnimation()
             drawWindow()
+        elif level == 4:
+            sc.blit(winscreen, (0, 0))
+            for i in pg.event.get():
+                WIN()
+        '''ПОМОГИТЕ КНОПКУ ВЫХОДА СДЕЛАТЬ КОВШ!!!'''
+
     else:
-        level = 1
+        # level = 1
         losewindow()
 
     pg.display.update()
