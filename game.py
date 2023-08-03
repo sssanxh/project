@@ -41,9 +41,7 @@ logo = pg.image.load('logo.png')
 logo = pg.transform.scale(logo, (300, 300))
 logomini = logo.copy()
 
-bg_music1 = pg.mixer.Sound('sounds/bg1.mp3')
-bg_music2 = pg.mixer.Sound('sounds/bg2.mp3')
-bg_music3 = pg.mixer.Sound('sounds/bg3.mp3')
+bg_music = pg.mixer.Sound('sounds/bg1.mp3')
 menu_music = pg.mixer.Sound('sounds/menu.mp3')
 hit_sound = pg.mixer.Sound('sounds/hit.mp3')
 heal_sound = pg.mixer.Sound('sounds/heal.mp3')
@@ -51,7 +49,7 @@ exp_sound = pg.mixer.Sound('sounds/exp.mp3')
 lose = pg.mixer.Sound('sounds/lose.mp3')
 menu_music.play(-1)
 menu_music.set_volume(0.5)
-bg_music1.set_volume(0.5)
+bg_music.set_volume(0.5)
 hit_sound.set_volume(0.9)
 exp_sound.set_volume(0.9)
 heal_sound.set_volume(0.9)
@@ -105,12 +103,12 @@ def control():
     if keys[pg.K_a] and x > 5:
         left = True
         right = False
-        x -= speed + 2 + level * 2
+        x -= speed + 2 + level * 5
         animCount = 0
     elif keys[pg.K_d] and x < 450 - width - 5:
         left = False
         right = True
-        x += speed + 2 + level * 2
+        x += speed + 2 + level * 5
         animCount = 0
     else:
         left = False
@@ -151,6 +149,8 @@ def drawWindow():
     global level
     global hp
     global exp
+    global bg_music
+    global bg
     if animCount + 1 >= 30:
         animCount = 0
     if left:
@@ -172,6 +172,20 @@ def drawWindow():
             if exp == 5:
                 if level < 3:
                     level += 1
+                if level == 2:
+                    bg_music.stop()
+                    bg_music = pg.mixer.Sound('sounds/bg2.mp3')
+                    bg_music.play(-1)
+                    bg = pg.image.load('bg2.jpg')
+                    bg = pg.transform.scale(bg, (620, 620))
+                    BgAnimation()
+                if level == 3:
+                    bg_music.stop()
+                    bg_music = pg.mixer.Sound('sounds/bg3.mp3')
+                    bg_music.play(-1)
+                    bg = pg.image.load('bg3.jpg')
+                    bg = pg.transform.scale(bg, (620, 620))
+                    BgAnimation()
                 exp = 3
     for heal_apple in heal_apples:
         if HOOKAH_rect.colliderect(heal_apple.rect):
@@ -278,7 +292,7 @@ def losewindow():  # доделать функцию
                                             manager=huager)
 
     dead = True
-    bg_music1.stop()
+    bg_music.stop()
     lose.play(-1)
     while dead:
         time_delta2 = clock.tick(60) / 1000
@@ -299,7 +313,7 @@ def losewindow():  # доделать функцию
                     x = 220
                     y = 450
                     lose.stop()
-                    bg_music1.play(-1)
+                    bg_music.play(-1)
             huager.process_events(i)
         huager.update(time_delta2)
         sc.blit(lose_img, (0, 0))
@@ -349,7 +363,7 @@ while menu:
                 lvl1 = True
                 menu = False
                 menu_music.stop()
-                bg_music1.play(-1)
+                bg_music.play(-1)
             if i.ui_element == exit_button:
                 menu = False
                 lvl1 = False
@@ -482,14 +496,10 @@ while lvl1:
         elif level == 2:
             for i in pg.event.get():
                 LEVEL2()
-            bg = pg.image.load('bg2.jpg')
-            BgAnimation()
             drawWindow()
         elif level == 3:
             for i in pg.event.get():
                 LEVEL3()
-            bg = pg.image.load('bg3.jpg')
-            BgAnimation()
             drawWindow()
     else:
         level = 1
