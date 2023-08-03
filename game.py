@@ -484,6 +484,10 @@ pg.time.set_timer(bad_timer, 1000)  # частота появления гнил
 pg.time.set_timer(red_timer, 8000)  # частота появления красных яблок
 pg.time.set_timer(green_timer, 10000)  # частота появления зеленых яблок
 
+tolvl1_img = pg.image.load('tolvl1.png')
+tolvl2_img = pg.image.load('tolvl2.png')
+tolvl3_img = pg.image.load('tolvl3.png')
+tolvl1 = tolvl2 = tolvl3 = 1
 def LEVEL1():
     if i.type == pg.QUIT:
         pg.quit()
@@ -515,16 +519,28 @@ while run:
     if Alive:
         control()
         if level == 1:
+            if tolvl1 == 1:
+                fade_in(tolvl1_img, 2, 0, 0)
+                fade_out(tolvl1_img, 2, 0, 0)
+                tolvl1 = 0
             for i in pg.event.get():
                 LEVEL1()
             BgAnimation()
             drawWindow()
         elif level == 2:
+            if tolvl2 == 1:
+                fade_in(tolvl2_img, 2, 0, 0)
+                fade_out(tolvl2_img, 2, 0, 0)
+                tolvl2 = 0
             for i in pg.event.get():
                 LEVEL2()
             BgAnimation()
             drawWindow()
         elif level == 3:
+            if tolvl3 == 1:
+                fade_in(tolvl3_img, 2, 0, 0)
+                fade_out(tolvl3_img, 2, 0, 0)
+                tolvl3 = 0
             for i in pg.event.get():
                 LEVEL3()
             BgAnimation()
