@@ -14,6 +14,8 @@ pg.display.set_caption("КАЛЬЯННЫЙ ГОНЩИК: ВОЗМЕЗДИЕ")
 icon = pg.image.load('logoblack.png')
 pg.display.set_icon(icon)
 
+BAD_COOMARS = 'sprites/Bad_Coomar/1.png'
+
 BAD_APPLES = ('sprites/Bad_Apple/1.png', 'sprites/Bad_Apple/2.png',
               'sprites/Bad_Apple/3.png', 'sprites/Bad_Apple/4.png',
               'sprites/Bad_Apple/5.png', 'sprites/Bad_Apple/6.png')
@@ -66,9 +68,7 @@ level = 1
 left = False
 right = False
 animCount = 0
-lvl1 = None
-lvl2 = False
-lvl3 = False
+run = None
 
 hp = 3
 hp_image = pg.image.load('sprites/HP_and_EXP/hp.png')
@@ -163,7 +163,7 @@ def drawWindow():
         animCount += 1
 
     HOOKAH_rect = pg.Rect(x + 65, y + 45, 60, 75)
-
+    exp = 4
     for exp_apple in exp_apples:
         if HOOKAH_rect.colliderect(exp_apple.rect):
             exp_apples.remove(exp_apple)
@@ -185,7 +185,6 @@ def drawWindow():
                     bg_music.play(-1)
                     bg = pg.image.load('bg3.jpg')
                     bg = pg.transform.scale(bg, (620, 620))
-                exp = 3
     for heal_apple in heal_apples:
         if HOOKAH_rect.colliderect(heal_apple.rect):
             heal_apples.remove(heal_apple)
@@ -201,10 +200,19 @@ def drawWindow():
             hp -= 1
             if hp == 0:
                 Alive = False
+    for coomar in bad_coomars:
+        if HOOKAH_rect.colliderect(coomar.rect):
+            bad_coomars.remove(coomar)
+            hit_sound.play(0)
+            # дается три жизни
+            hp -= 1
+            if hp == 0:
+                Alive = False
 
     heal_apples.draw(sc)
     exp_apples.draw(sc)
     bad_apples.draw(sc)
+    bad_coomars.draw(sc)
 
     HealthBar()
     ExpBar()
@@ -359,13 +367,13 @@ while menu:
             menu = False
         if i.type == pg_gui.UI_BUTTON_PRESSED:
             if i.ui_element == hello_button:
-                lvl1 = True
+                run = True
                 menu = False
                 menu_music.stop()
                 bg_music.play(-1)
             if i.ui_element == exit_button:
                 menu = False
-                lvl1 = False
+                run = False
         manager.process_events(i)
     sc.blit(menu_img, (0, 0))
     manager.update(time_delta)
@@ -439,6 +447,27 @@ class BadApple(pg.sprite.Sprite):
             self.kill()
 
 
+class BadCoomar(pg.sprite.Sprite):
+    def __init__(self, x, surf, group):
+        pg.sprite.Sprite.__init__(self)
+        self.image = surf
+        self.cur = 0
+        self.image = self.images[self.cur]
+        self.rect = self.image.get_rect(center=(x, 0))
+        # добавляем в группу
+        self.add(group)
+        # у машин будет разная скорость
+        self.speed = randint(3, 4)
+
+    def update(self):
+        if self.rect.y < 620:
+            self.rect.y += self.speed
+        else:
+            # теперь не перебрасываем вверх, а удаляем из всех групп
+            self.kill()
+
+
+bad_coomars = pg.sprite.Group()
 heal_apples = pg.sprite.Group()
 exp_apples = pg.sprite.Group()
 bad_apples = pg.sprite.Group()
@@ -446,15 +475,17 @@ bad_apples = pg.sprite.Group()
 bg_y = 0
 bad_timer = pg.USEREVENT + 1
 red_timer = bad_timer + 100  # xd
+very_bad_timer = bad_timer + 100  # xd
+bad_coomar_timer = bad_timer + 100  # xd
 green_timer = bad_timer + 1000  # xd
+pg.time.set_timer(very_bad_timer, 10000)
+pg.time.set_timer(bad_coomar_timer, 1000)
 pg.time.set_timer(bad_timer, 1000)  # частота появления гнилых яблок
 pg.time.set_timer(red_timer, 8000)  # частота появления красных яблок
 pg.time.set_timer(green_timer, 10000)  # частота появления зеленых яблок
 
 def LEVEL1():
-    global lvl1
     if i.type == pg.QUIT:
-        lvl1 = False
         pg.quit()
     elif i.type == bad_timer:
         BadApple(randrange(106, 533, 205), BAD_APPLES_NEW, bad_apples)
@@ -464,27 +495,25 @@ def LEVEL1():
         ExpApple(randrange(106, 533, 205), GREEN_APPLES_NEW, exp_apples)
 
 def LEVEL2():
-    global lvl2
     if i.type == pg.QUIT:
-        lvl2 = False
         pg.quit()
-    elif i.type == bad_timer:
+    elif i.type == very_bad_timer:
         BadApple(randrange(106, 533, 205), BAD_APPLES_NEW, bad_apples)
+    elif i.type == bad_coomar_timer:
+        BadCoomar(randrange(106, 310, 205), BAD_COOMARS, bad_coomars)
     elif i.type == red_timer:
         HealApple(randrange(106, 533, 205), RED_APPLES_NEW, heal_apples)
     elif i.type == green_timer:
         ExpApple(randrange(106, 533, 205), GREEN_APPLES_NEW, exp_apples)
 
 def LEVEL3():
-    global lvl3
     if i.type == pg.QUIT:
-        lvl3 = False
         pg.quit()
 
 
 Alive = True
 # главный цикл
-while lvl1:
+while run:
     if Alive:
         control()
         if level == 1:
@@ -511,4 +540,5 @@ while lvl1:
     clock.tick(60)
     heal_apples.update()
     exp_apples.update()
+    bad_coomars.update()
     bad_apples.update()
