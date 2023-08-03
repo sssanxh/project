@@ -10,6 +10,9 @@ pg.time.set_timer(pg.USEREVENT, 10000)
 sc = pg.display.set_mode((620, 620))
 pg.display.set_caption("КАЛЬЯННЫЙ ГОНЩИК: ВОЗМЕЗДИЕ")
 
+icon = pg.image.load('logoblack.png')
+pg.display.set_icon(icon)
+
 BAD_APPLES = ('sprites/Bad_Apple/1.png', 'sprites/Bad_Apple/2.png',
               'sprites/Bad_Apple/3.png', 'sprites/Bad_Apple/4.png',
               'sprites/Bad_Apple/5.png', 'sprites/Bad_Apple/6.png')
@@ -124,7 +127,7 @@ def control():
 
 def ExpBar():
     sc.blit(exp_bg_image, (0, 30))
-    sc.blit(exp_name, (310, 30))
+    sc.blit(exp_name, (250, 30))
     x = 10
     show = 0
     while show != exp:
