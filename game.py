@@ -6,6 +6,7 @@ import pygame as pg
 pg.init()
 
 pg.time.set_timer(pg.USEREVENT, 10000)
+clock = pg.time.Clock()
 
 sc = pg.display.set_mode((620, 620))
 pg.display.set_caption("КАЛЬЯННЫЙ ГОНЩИК: ВОЗМЕЗДИЕ")
@@ -34,18 +35,15 @@ HOOKAH_NEW = [pg.transform.scale(pg.image.load(i), (200, 200)) for i in HOOKAH]
 HOOKAH_LEFT = pg.transform.scale(pg.image.load('sprites/Hookah/left.png'), (200, 200))
 HOOKAH_RIGHT = pg.transform.scale(pg.image.load('sprites/Hookah/right.png'), (200, 200))
 
-LEVELS_BG = ('bg1.jpg', 'bg2.jpg', 'bg3.jpg')
-LEVELS_MUSIC = ('sounds/bg_lvl1.mp3', 'sounds/bg_lvl2.mp3', 'sounds/bg_lvl3.mp3')
-
 bg = pg.image.load('bg1.jpg')
 bg = pg.transform.scale(bg, (620, 620))
 logo = pg.image.load('logo.png')
 logo = pg.transform.scale(logo, (300, 300))
 logomini = logo.copy()
 
-bg_music1 = pg.mixer.Sound('sounds/bg_lvl1lol.mp3')
-bg_music2 = pg.mixer.Sound('sounds/bg_lvl2.mp3')
-bg_music3 = pg.mixer.Sound('sounds/bg_lvl3.mp3')
+bg_music1 = pg.mixer.Sound('sounds/bg1.mp3')
+bg_music2 = pg.mixer.Sound('sounds/bg2.mp3')
+bg_music3 = pg.mixer.Sound('sounds/bg3.mp3')
 menu_music = pg.mixer.Sound('sounds/menu.mp3')
 hit_sound = pg.mixer.Sound('sounds/hit.mp3')
 heal_sound = pg.mixer.Sound('sounds/heal.mp3')
@@ -59,7 +57,6 @@ exp_sound.set_volume(0.9)
 heal_sound.set_volume(0.9)
 lose.set_volume(0.9)
 
-clock = pg.time.Clock()
 
 x = 220
 y = 450
@@ -70,9 +67,10 @@ level = 1
 
 left = False
 right = False
-stay = True
 animCount = 0
-run = None
+lvl1 = None
+lvl2 = False
+lvl3 = False
 
 hp = 3
 hp_image = pg.image.load('sprites/HP_and_EXP/hp.png')
@@ -98,25 +96,25 @@ def HealthBar():
 
 
 def control():
+    global left
+    global right
     global x
     global y
+    global animCount
     keys = pg.key.get_pressed()
     if keys[pg.K_a] and x > 5:
         left = True
         right = False
-        stay = False
-        x -= speed + 4
+        x -= speed + 2 + level * 2
         animCount = 0
     elif keys[pg.K_d] and x < 450 - width - 5:
         left = False
         right = True
-        stay = False
-        x += speed + 4
+        x += speed + 2 + level * 2
         animCount = 0
     else:
         left = False
         right = False
-        stay = True
     if keys[pg.K_w] and y > 5:
         y -= speed
     if keys[pg.K_s] and y < 600 - height - 5:
@@ -155,21 +153,17 @@ def drawWindow():
     global exp
     if animCount + 1 >= 30:
         animCount = 0
-    if stay:
+    if left:
+        sc.blit(HOOKAH_LEFT, (x, y))
+    elif right:
+        sc.blit(HOOKAH_RIGHT, (x, y))
+    else:
         sc.blit(HOOKAH_NEW[animCount // 5], (x, y))
         animCount += 1
-    else:
-        if left:
-            sc.blit(HOOKAH_LEFT, (x, y))
-        elif right:
-            sc.blit(HOOKAH_RIGHT, (x, y))
 
     HOOKAH_rect = pg.Rect(x + 65, y + 45, 60, 75)
 
-    #pg.draw.rect(sc, (255, 0, 0), HOOKAH_rect, 2) #тестовый вывод хитбокса кальяна
-
     for exp_apple in exp_apples:
-        pg.draw.rect(sc, (255, 0, 0), exp_apple, 2) #тестовый вывод хитбокса зеленого яблока
         if HOOKAH_rect.colliderect(exp_apple.rect):
             exp_apples.remove(exp_apple)
             exp_sound.play(0)
@@ -179,9 +173,7 @@ def drawWindow():
                 if level < 3:
                     level += 1
                 exp = 3
-
     for heal_apple in heal_apples:
-        #pg.draw.rect(sc, (255, 0, 0), heal_apple, 2)  # тестовый вывод хитбокса хил яблока
         if HOOKAH_rect.colliderect(heal_apple.rect):
             heal_apples.remove(heal_apple)
             heal_sound.play(0)
@@ -189,7 +181,6 @@ def drawWindow():
                 hp += 1
 
     for bad_apple in bad_apples:
-       # pg.draw.rect(sc, (255, 0, 0), bad_apple, 2)  # тестовый вывод хитбокса бед яблока
         if HOOKAH_rect.colliderect(bad_apple.rect):
             bad_apples.remove(bad_apple)
             hit_sound.play(0)
@@ -286,7 +277,6 @@ def losewindow():  # доделать функцию
                                             text='Я БОЮСЬ',
                                             manager=huager)
 
-    mouse = pg.mouse.get_pos()
     dead = True
     bg_music1.stop()
     lose.play(-1)
@@ -356,13 +346,13 @@ while menu:
             menu = False
         if i.type == pg_gui.UI_BUTTON_PRESSED:
             if i.ui_element == hello_button:
-                run = True
+                lvl1 = True
                 menu = False
                 menu_music.stop()
                 bg_music1.play(-1)
             if i.ui_element == exit_button:
                 menu = False
-                run = False
+                lvl1 = False
         manager.process_events(i)
     sc.blit(menu_img, (0, 0))
     manager.update(time_delta)
@@ -449,9 +439,9 @@ pg.time.set_timer(red_timer, 8000)  # частота появления крас
 pg.time.set_timer(green_timer, 10000)  # частота появления зеленых яблок
 
 def LEVEL1():
-    global run
+    global lvl1
     if i.type == pg.QUIT:
-        run = False
+        lvl1 = False
         pg.quit()
     elif i.type == bad_timer:
         BadApple(randrange(106, 533, 205), BAD_APPLES_NEW, bad_apples)
@@ -461,9 +451,9 @@ def LEVEL1():
         ExpApple(randrange(106, 533, 205), GREEN_APPLES_NEW, exp_apples)
 
 def LEVEL2():
-    global run
+    global lvl2
     if i.type == pg.QUIT:
-        run = False
+        lvl2 = False
         pg.quit()
     elif i.type == bad_timer:
         BadApple(randrange(106, 533, 205), BAD_APPLES_NEW, bad_apples)
@@ -473,15 +463,15 @@ def LEVEL2():
         ExpApple(randrange(106, 533, 205), GREEN_APPLES_NEW, exp_apples)
 
 def LEVEL3():
-    global run
+    global lvl3
     if i.type == pg.QUIT:
-        run = False
+        lvl3 = False
         pg.quit()
 
 
 Alive = True
 # главный цикл
-while run:
+while lvl1:
     if Alive:
         control()
         if level == 1:
