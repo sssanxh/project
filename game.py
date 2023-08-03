@@ -41,6 +41,7 @@ logo = pg.transform.scale(logo, (300, 300))
 logomini = logo.copy()
 
 bg_music1 = pg.mixer.Sound('sounds/bg_lvl1lol.mp3')
+bg_music2 = pg.mixer.Sound('sounds/bg_lvl2.mp3')
 menu_music = pg.mixer.Sound('sounds/menu.mp3')
 hit_sound = pg.mixer.Sound('sounds/hit.mp3')
 heal_sound = pg.mixer.Sound('sounds/heal.mp3')
@@ -460,6 +461,7 @@ while run:
             bg = pg.image.load('bg3.jpg')
             BgAnimation()
             bg_music1.stop()
+            bg_music2.play(-1)#рил ад
             draw_text('ВАС ОЖИДАЕТ АД', font, (255, 255, 255), 15, 110)
 
     else:
