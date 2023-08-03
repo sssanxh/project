@@ -42,6 +42,7 @@ logomini = logo.copy()
 
 bg_music1 = pg.mixer.Sound('sounds/bg_lvl1lol.mp3')
 bg_music2 = pg.mixer.Sound('sounds/bg_lvl2.mp3')
+bg_music3 = pg.mixer.Sound('sounds/bg_lvl3.mp3')
 menu_music = pg.mixer.Sound('sounds/menu.mp3')
 hit_sound = pg.mixer.Sound('sounds/hit.mp3')
 heal_sound = pg.mixer.Sound('sounds/heal.mp3')
@@ -82,17 +83,7 @@ exp_name = pg.image.load('sprites/HP_and_EXP/expname.png')
 exp_bg_image = pg.image.load('sprites/HP_and_EXP/expbg.png')
 
 
-def LEVEL1():
-    global run
-    if i.type == pg.QUIT:
-        run = False
-        pg.quit()
-    elif i.type == bad_timer:
-        BadApple(randrange(106, 533, 205), BAD_APPLES_NEW, bad_apples)
-    elif i.type == red_timer:
-        HealApple(randrange(106, 533, 205), RED_APPLES_NEW, heal_apples)
-    elif i.type == green_timer:
-        ExpApple(randrange(106, 533, 205), GREEN_APPLES_NEW, exp_apples)
+
 def HealthBar():
     sc.blit(hp_bg_image, (10, 0))
     sc.blit(hp_name, (160, 0))
@@ -104,7 +95,32 @@ def HealthBar():
         show += 1
 
 
-'''Функция шкалы ОПЫТА?!'''
+def control():
+    global x
+    global y
+    keys = pg.key.get_pressed()
+    if keys[pg.K_a] and x > 5:
+        left = True
+        right = False
+        stay = False
+        x -= speed + 4
+        animCount = 0
+    elif keys[pg.K_d] and x < 450 - width - 5:
+        left = False
+        right = True
+        stay = False
+        x += speed + 4
+        animCount = 0
+    else:
+        left = False
+        right = False
+        stay = True
+    if keys[pg.K_w] and y > 5:
+        y -= speed
+    if keys[pg.K_s] and y < 600 - height - 5:
+        y += speed
+    if keys[pg.K_ESCAPE]:
+        pause()
 
 
 def ExpBar():
@@ -160,6 +176,7 @@ def drawWindow():
             if exp == 5:
                 if level < 3:
                     level += 1
+                exp = 3
 
     for heal_apple in heal_apples:
         #pg.draw.rect(sc, (255, 0, 0), heal_apple, 2)  # тестовый вывод хитбокса хил яблока
@@ -425,44 +442,54 @@ pg.time.set_timer(bad_timer, 1000)  # частота появления гнил
 pg.time.set_timer(red_timer, 8000)  # частота появления красных яблок
 pg.time.set_timer(green_timer, 10000)  # частота появления зеленых яблок
 
+def LEVEL1():
+    global run
+    if i.type == pg.QUIT:
+        run = False
+        pg.quit()
+    elif i.type == bad_timer:
+        BadApple(randrange(106, 533, 205), BAD_APPLES_NEW, bad_apples)
+    elif i.type == red_timer:
+        HealApple(randrange(106, 533, 205), RED_APPLES_NEW, heal_apples)
+    elif i.type == green_timer:
+        ExpApple(randrange(106, 533, 205), GREEN_APPLES_NEW, exp_apples)
+
+def LEVEL2():
+    global run
+    if i.type == pg.QUIT:
+        run = False
+        pg.quit()
+    elif i.type == bad_timer:
+        BadApple(randrange(106, 533, 205), BAD_APPLES_NEW, bad_apples)
+    elif i.type == red_timer:
+        HealApple(randrange(106, 533, 205), RED_APPLES_NEW, heal_apples)
+    elif i.type == green_timer:
+        ExpApple(randrange(106, 533, 205), GREEN_APPLES_NEW, exp_apples)
+
 Alive = True
 # главный цикл
 while run:
     if Alive:
+        control()
         if level == 1:
-            BgAnimation()
             for i in pg.event.get():
                 LEVEL1()
-            keys = pg.key.get_pressed()
-            if keys[pg.K_a] and x > 5:
-                left = True
-                right = False
-                stay = False
-                x -= speed + 4
-                animCount = 0
-            elif keys[pg.K_d] and x < 450 - width - 5:
-                left = False
-                right = True
-                stay = False
-                x += speed + 4
-                animCount = 0
-            else:
-                left = False
-                right = False
-                stay = True
-            if keys[pg.K_w] and y > 5:
-                y -= speed
-            if keys[pg.K_s] and y < 600 - height - 5:
-                y += speed
-            if keys[pg.K_ESCAPE]:
-                pause()
+            BgAnimation()
             drawWindow()
+        elif level == 2:
+            for i in pg.event.get():
+                LEVEL2()
+            bg = pg.image.load('bg2.jpg')
+            BgAnimation()
+            drawWindow()
+            draw_text('второй лвл', font, (255, 255, 255), 15, 110)
         else:
             bg = pg.image.load('bg3.jpg')
             BgAnimation()
             bg_music1.stop()
-            bg_music2.play(-1)#рил ад
-            draw_text('ВАС ОЖИДАЕТ АД', font, (255, 255, 255), 15, 110)
+            draw_text('боссфайт', font, (255, 255, 255), 15, 110)
+            bg_music3.play(-1)
+
 
     else:
         losewindow()
