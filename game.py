@@ -48,12 +48,12 @@ heal_sound = pg.mixer.Sound('sounds/heal.mp3')
 exp_sound = pg.mixer.Sound('sounds/exp.mp3')
 lose = pg.mixer.Sound('sounds/lose.mp3')
 menu_music.play(-1)
-menu_music.set_volume(0.5)
-bg_music1.set_volume(0.5)
-hit_sound.set_volume(0.9)
-exp_sound.set_volume(0.9)
-heal_sound.set_volume(0.9)
-lose.set_volume(0.9)
+menu_music.set_volume(0.05)
+bg_music1.set_volume(0.05)
+hit_sound.set_volume(0.09)
+exp_sound.set_volume(0.09)
+heal_sound.set_volume(0.09)
+lose.set_volume(0.09)
 
 clock = pg.time.Clock()
 
@@ -76,23 +76,13 @@ hp_image = pg.image.load('sprites/HP_and_EXP/hp.png')
 hp_bg_image = pg.image.load('sprites/HP_and_EXP/hpbg.png')
 hp_name = pg.image.load('sprites/HP_and_EXP/healthname.png')
 
+
 exp = 0
 exp_image = pg.image.load('sprites/HP_and_EXP/exp.png')
 exp_name = pg.image.load('sprites/HP_and_EXP/expname.png')
 exp_bg_image = pg.image.load('sprites/HP_and_EXP/expbg.png')
 
-
-def LEVEL1():
-    global run
-    if i.type == pg.QUIT:
-        run = False
-        pg.quit()
-    elif i.type == bad_timer:
-        BadApple(randrange(106, 533, 205), BAD_APPLES_NEW, bad_apples)
-    elif i.type == red_timer:
-        HealApple(randrange(106, 533, 205), RED_APPLES_NEW, heal_apples)
-    elif i.type == green_timer:
-        ExpApple(randrange(106, 533, 205), GREEN_APPLES_NEW, exp_apples)
+'''Фукнция шкалы ЖИЗЯК)'''
 def HealthBar():
     sc.blit(hp_bg_image, (10, 0))
     sc.blit(hp_name, (160, 0))
@@ -103,10 +93,7 @@ def HealthBar():
         x += 50
         show += 1
 
-
 '''Функция шкалы ОПЫТА?!'''
-
-
 def ExpBar():
     sc.blit(exp_bg_image, (0, 30))
     sc.blit(exp_name, (310, 30))
@@ -116,17 +103,6 @@ def ExpBar():
         sc.blit(exp_image, (x, 30))
         x += 50
         show += 1
-
-    # Движение заднего фона
-
-
-def BgAnimation():
-    global bg_y
-    sc.blit(bg, (0, bg_y))
-    sc.blit(bg, (0, bg_y - 620))
-    bg_y += 2
-    if bg_y == 620:
-        bg_y = 0
 
 
 def drawWindow():
@@ -172,6 +148,8 @@ def drawWindow():
             hp -= 1
             if hp == 0:
                 Alive = False
+                bg_music1.stop()
+                lose.play(-1)
 
     heal_apples.draw(sc)
     exp_apples.draw(sc)
@@ -202,25 +180,16 @@ def draw_text(text, font, text_col, x, y):
 
 
 # экран проигрыша
-def losewindow():  # доделать функцию
-    global Alive
-    global hp
-    global exp
-    global x
-    global y
+def losewindow(): #доделать функцию
     sc.fill((0, 0, 0))
     huager = pg_gui.UIManager((620, 620))
     hello_button2 = pg_gui.elements.UIButton(relative_rect=pg.Rect((40, 200), (200, 50)),
-                                             text='ЕЩЕ РАЗ',
+                                             text='ЕЩЁ РАЗ НЕ ***',
                                              manager=huager)
     exit_button2 = pg_gui.elements.UIButton(relative_rect=pg.Rect((40, 350), (200, 50)),
                                             text='Я БОЮСЬ',
                                             manager=huager)
-
-    mouse = pg.mouse.get_pos()
     dead = True
-    bg_music1.stop()
-    lose.play(-1)
     while dead:
         time_delta2 = clock.tick(60) / 1000
         for i in pg.event.get():
@@ -233,21 +202,15 @@ def losewindow():  # доделать функцию
                 if exit_button2.rect.collidepoint(i.pos):
                     quit()
                 if hello_button2.rect.collidepoint(i.pos):
-                    Alive = True
-                    dead = False
-                    hp = 3
-                    exp = 0
-                    x = 220
-                    y = 450
-                    lose.stop()
-                    bg_music1.play(-1)
+                    pass #придумать как сделать рестарт
+
             huager.process_events(i)
         huager.update(time_delta2)
         huager.draw_ui(sc)
         pg.display.update()
 
 
-def fade_out(surface, fade_speed, x, y):  # Функция для плавного исчезновения
+def fade_out(surface, fade_speed, x, y, ):  # Функция для плавного исчезновения
     alpha = 255
     while alpha > 0:
         alpha -= fade_speed
@@ -258,7 +221,7 @@ def fade_out(surface, fade_speed, x, y):  # Функция для плавног
         clock.tick(60)
 
 
-def fade_in(surface, fade_speed, x, y):  # Функция для плавного появления
+def fade_in(surface, fade_speed, x, y, ):  # Функция для плавного появления
     alpha = 0
     while alpha < 255:
         alpha += fade_speed
@@ -381,9 +344,25 @@ Alive = True
 # главный цикл
 while run:
     if Alive:
-        BgAnimation()
+        # Движение заднего фона
+        sc.blit(bg, (0, bg_y))
+        sc.blit(bg, (0, bg_y - 620))
+        bg_y += 2
+        if bg_y == 620:
+            bg_y = 0
+
         for i in pg.event.get():
-            LEVEL1()
+            if i.type == pg.QUIT:
+                run = False
+                pg.quit()
+
+            elif i.type == bad_timer:
+                BadApple(randrange(106, 533, 205), BAD_APPLES_NEW, bad_apples)
+            elif i.type == red_timer:
+                HealApple(randrange(106, 533, 205), RED_APPLES_NEW, heal_apples)
+            elif i.type == green_timer:
+                ExpApple(randrange(106, 533, 205), GREEN_APPLES_NEW, exp_apples)
+
         keys = pg.key.get_pressed()
         if keys[pg.K_a] and x > 5:
             left = True
@@ -408,7 +387,7 @@ while run:
         drawWindow()
     else:
         losewindow()
-    if level_up:
+    if level_up == True:
         sc.fill((0, 0, 0))
         draw_text('уровень 1 пройден(продолжение следует)', font, (255, 255, 255), 40, 50)
     pg.display.update()
