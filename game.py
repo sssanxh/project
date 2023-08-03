@@ -14,7 +14,8 @@ pg.display.set_caption("КАЛЬЯННЫЙ ГОНЩИК: ВОЗМЕЗДИЕ")
 icon = pg.image.load('logoblack.png')
 pg.display.set_icon(icon)
 
-BAD_COOMARS = 'sprites/Bad_Coomar/1.png'
+BAD_COOMARS = ('sprites/Bad_Coomar/1.png','sprites/Bad_Coomar/2.png',)
+BAD_COOMARS_NEW = [pg.transform.scale(pg.image.load(i), (300, 150)) for i in BAD_COOMARS]
 
 BAD_APPLES = ('sprites/Bad_Apple/1.png', 'sprites/Bad_Apple/2.png',
               'sprites/Bad_Apple/3.png', 'sprites/Bad_Apple/4.png',
@@ -200,9 +201,9 @@ def drawWindow():
             hp -= 1
             if hp == 0:
                 Alive = False
-    for coomar in bad_coomars:
-        if HOOKAH_rect.colliderect(coomar.rect):
-            bad_coomars.remove(coomar)
+    for bad_coomar in bad_coomars:
+        if HOOKAH_rect.colliderect(bad_coomar.rect):
+            bad_apples.remove(bad_coomar)
             hit_sound.play(0)
             # дается три жизни
             hp -= 1
@@ -445,27 +446,26 @@ class BadApple(pg.sprite.Sprite):
         else:
             # теперь не перебрасываем вверх, а удаляем из всех групп
             self.kill()
-
-
 class BadCoomar(pg.sprite.Sprite):
     def __init__(self, x, surf, group):
         pg.sprite.Sprite.__init__(self)
-        self.image = surf
+        self.images = surf.copy()
         self.cur = 0
         self.image = self.images[self.cur]
         self.rect = self.image.get_rect(center=(x, 0))
         # добавляем в группу
         self.add(group)
         # у машин будет разная скорость
-        self.speed = randint(3, 4)
+        self.speed = 2
 
     def update(self):
+        self.cur = (self.cur + 1) % len(self.images)
+        self.image = self.images[self.cur]
         if self.rect.y < 620:
             self.rect.y += self.speed
         else:
             # теперь не перебрасываем вверх, а удаляем из всех групп
             self.kill()
-
 
 bad_coomars = pg.sprite.Group()
 heal_apples = pg.sprite.Group()
@@ -476,10 +476,10 @@ bg_y = 0
 bad_timer = pg.USEREVENT + 1
 red_timer = bad_timer + 100  # xd
 very_bad_timer = bad_timer + 100  # xd
-bad_coomar_timer = bad_timer + 100  # xd
+bad_coom_timer = bad_timer + 1
 green_timer = bad_timer + 1000  # xd
 pg.time.set_timer(very_bad_timer, 10000)
-pg.time.set_timer(bad_coomar_timer, 1000)
+pg.time.set_timer(bad_coom_timer, 2000)
 pg.time.set_timer(bad_timer, 1000)  # частота появления гнилых яблок
 pg.time.set_timer(red_timer, 8000)  # частота появления красных яблок
 pg.time.set_timer(green_timer, 10000)  # частота появления зеленых яблок
@@ -497,12 +497,10 @@ def LEVEL1():
 def LEVEL2():
     if i.type == pg.QUIT:
         pg.quit()
+    elif i.type == bad_coom_timer:
+        BadCoomar(randrange(106, 320, 205), BAD_COOMARS_NEW, bad_coomars)
     elif i.type == very_bad_timer:
         BadApple(randrange(106, 533, 205), BAD_APPLES_NEW, bad_apples)
-    elif i.type == bad_coomar_timer:
-        BadCoomar(randrange(106, 310, 205), BAD_COOMARS, bad_coomars)
-    elif i.type == red_timer:
-        HealApple(randrange(106, 533, 205), RED_APPLES_NEW, heal_apples)
     elif i.type == green_timer:
         ExpApple(randrange(106, 533, 205), GREEN_APPLES_NEW, exp_apples)
 
