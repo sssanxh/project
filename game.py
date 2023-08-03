@@ -103,12 +103,12 @@ def control():
     if keys[pg.K_a] and x > 5:
         left = True
         right = False
-        x -= speed + 2 + level * 5
+        x -= speed + 2 + level * 2
         animCount = 0
     elif keys[pg.K_d] and x < 450 - width - 5:
         left = False
         right = True
-        x += speed + 2 + level * 5
+        x += speed + 2 + level * 2
         animCount = 0
     else:
         left = False
@@ -136,6 +136,7 @@ def ExpBar():
 
 def BgAnimation():
     global bg_y
+    global bg
     sc.blit(bg, (0, bg_y))
     sc.blit(bg, (0, bg_y - 620))
     bg_y += 2
@@ -178,14 +179,12 @@ def drawWindow():
                     bg_music.play(-1)
                     bg = pg.image.load('bg2.jpg')
                     bg = pg.transform.scale(bg, (620, 620))
-                    BgAnimation()
                 if level == 3:
                     bg_music.stop()
                     bg_music = pg.mixer.Sound('sounds/bg3.mp3')
                     bg_music.play(-1)
                     bg = pg.image.load('bg3.jpg')
                     bg = pg.transform.scale(bg, (620, 620))
-                    BgAnimation()
                 exp = 3
     for heal_apple in heal_apples:
         if HOOKAH_rect.colliderect(heal_apple.rect):
@@ -496,10 +495,12 @@ while lvl1:
         elif level == 2:
             for i in pg.event.get():
                 LEVEL2()
+            BgAnimation()
             drawWindow()
         elif level == 3:
             for i in pg.event.get():
                 LEVEL3()
+            BgAnimation()
             drawWindow()
     else:
         level = 1
