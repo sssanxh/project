@@ -148,8 +148,12 @@ def drawWindow():
         elif right:
             sc.blit(HOOKAH_RIGHT, (x, y))
 
-    HOOKAH_rect = pg.Rect(x + 60, y + 20, 60, 30)
+    HOOKAH_rect = pg.Rect(x + 65, y + 45, 60, 75)
+
+    pg.draw.rect(sc, (255, 0, 0), HOOKAH_rect, 2) #тестовый вывод хитбокса кальяна
+
     for exp_apple in exp_apples:
+        #pg.draw.rect(sc, (255, 0, 0), exp_apple, 2) #тестовый вывод хитбокса зеленого яблока
         if HOOKAH_rect.colliderect(exp_apple.rect):
             exp_apples.remove(exp_apple)
             exp_sound.play(0)
@@ -159,12 +163,15 @@ def drawWindow():
                 level_up = True
 
     for heal_apple in heal_apples:
+        #pg.draw.rect(sc, (255, 0, 0), heal_apple, 2)  # тестовый вывод хитбокса хил яблока
         if HOOKAH_rect.colliderect(heal_apple.rect):
             heal_apples.remove(heal_apple)
             heal_sound.play(0)
             if hp < 3:
                 hp += 1
+
     for bad_apple in bad_apples:
+       # pg.draw.rect(sc, (255, 0, 0), bad_apple, 2)  # тестовый вывод хитбокса бед яблока
         if HOOKAH_rect.colliderect(bad_apple.rect):
             bad_apples.remove(bad_apple)
             hit_sound.play(0)
@@ -199,6 +206,49 @@ font = pg.font.Font('Fixedsys.ttf', size=32)
 def draw_text(text, font, text_col, x, y):
     img = font.render(text, False, text_col)
     sc.blit(img, (x, y))
+
+
+def pause( ):
+    transparent = pg.Surface((620,620))
+    transparent.set_alpha(60)
+
+
+    #переход
+    for i in range(7):
+        sc.blit(transparent,(0,0))
+        pg.display.flip()
+        pg.time.wait(30)
+
+    manager = pg_gui.UIManager((620, 620))
+    hello_button = pg_gui.elements.UIButton(relative_rect=pg.Rect((15, 200), (195, 50)),
+                                            text='ПРОДОЛЖИТЬ?',
+                                            manager=manager)
+    exit_button = pg_gui.elements.UIButton(relative_rect=pg.Rect((15, 350), (195, 50)),
+                                           text='СТРАХ СЛИШКОМ СИЛЁН',
+                                           manager=manager)
+    pause = True
+    while pause:
+        time_delta2 = clock.tick(60) / 1000
+        for i in pg.event.get():
+            if i.type == pg.QUIT:
+                quit()
+            if i.type == pg.KEYDOWN:
+                if i.key == pg.K_ESCAPE:
+                    pause = not pause
+
+            if i.type == pg.MOUSEBUTTONDOWN:
+                if exit_button.rect.collidepoint(i.pos):
+                    quit()
+                if hello_button.rect.collidepoint(i.pos):
+                    pause = not pause
+
+
+            manager.process_events(i)
+        manager.update(time_delta2)
+        manager.draw_ui(sc)
+        draw_text('ПАУЗА', font, (255, 255, 255), 70, 280)
+        pg.display.update()
+
 
 
 # экран проигрыша
@@ -295,7 +345,6 @@ while menu:
         manager.process_events(i)
     manager.update(time_delta)
     manager.draw_ui(sc)
-
     pg.display.update()
 
 
@@ -405,6 +454,8 @@ while run:
             y -= speed
         if keys[pg.K_s] and y < 600 - height - 5:
             y += speed
+        if keys[pg.K_ESCAPE]:
+            pause()
         drawWindow()
     else:
         losewindow()
