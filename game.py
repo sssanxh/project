@@ -76,7 +76,7 @@ hp_image = pg.image.load('sprites/HP_and_EXP/hp.png')
 hp_bg_image = pg.image.load('sprites/HP_and_EXP/hpbg.png')
 hp_name = pg.image.load('sprites/HP_and_EXP/healthname.png')
 
-exp = 4
+exp = 0
 exp_image = pg.image.load('sprites/HP_and_EXP/exp.png')
 exp_name = pg.image.load('sprites/HP_and_EXP/expname.png')
 exp_bg_image = pg.image.load('sprites/HP_and_EXP/expbg.png')
@@ -164,7 +164,7 @@ def drawWindow():
         animCount += 1
 
     HOOKAH_rect = pg.Rect(x + 65, y + 45, 60, 75)
-    exp = 4
+    # exp = 0
     for exp_apple in exp_apples:
         if HOOKAH_rect.colliderect(exp_apple.rect):
             exp_apples.remove(exp_apple)
@@ -317,7 +317,7 @@ def losewindow():  # доделать функцию
                     Alive = True
                     dead = False
                     hp = 3
-                    exp = 3
+                    exp = 0
                     x = 220
                     y = 450
                     lose.stop()
@@ -480,7 +480,7 @@ bad_coom_timer = bad_timer + 1
 green_timer = bad_timer + 1000  # xd
 pg.time.set_timer(very_bad_timer, 10000)
 pg.time.set_timer(bad_coom_timer, 2000)
-pg.time.set_timer(bad_timer, 1000)  # частота появления гнилых яблок
+pg.time.set_timer(bad_timer, 2500)  # частота появления гнилых яблок
 pg.time.set_timer(red_timer, 8000)  # частота появления красных яблок
 pg.time.set_timer(green_timer, 10000)  # частота появления зеленых яблок
 
@@ -490,9 +490,12 @@ tolvl3_img = pg.image.load('tolvl3.png')
 winscreen = pg.image.load('winscreen.png')
 tolvl1 = tolvl2 = tolvl3 = 1
 
-exit_button3 = pg_gui.elements.UIButton(relative_rect=pg.Rect((15, 325), (175, 50)),
+man = pg_gui.UIManager((620, 620))
+
+exit_button3 = pg_gui.elements.UIButton(relative_rect=pg.Rect((235, 325), (175, 50)),
                                                     text='ПРОЩАЙ, КАЛИК!',
-                                                    manager=manager)
+                                                    manager=man)
+
 
 def LEVEL1():
     if i.type == pg.QUIT:
@@ -519,12 +522,22 @@ def LEVEL2():
 def LEVEL3():
     if i.type == pg.QUIT:
         pg.quit()
+    elif i.type == very_bad_timer:
+        BadApple(randrange(106, 533, 205), BAD_APPLES_NEW, bad_apples)
     elif i.type == green_timer:
         ExpApple(randrange(106, 533, 205), GREEN_APPLES_NEW, exp_apples)
+    elif i.type == red_timer:
+        HealApple(randrange(106, 533, 205), RED_APPLES_NEW, heal_apples)
 
 def WIN():
     if i.type == pg.QUIT:
         pg.quit()
+    if i.type == pg.MOUSEBUTTONDOWN:
+        if exit_button3.rect.collidepoint(i.pos):
+            quit()
+
+
+
 
 Alive = True
 # главный цикл
@@ -535,6 +548,8 @@ while run:
             if tolvl1 == 1:
                 fade_in(tolvl1_img, 2, 0, 0)
                 fade_out(tolvl1_img, 2, 0, 0)
+                hp = 3
+                exp = 0
                 tolvl1 = 0
             for i in pg.event.get():
                 LEVEL1()
@@ -544,6 +559,8 @@ while run:
             if tolvl2 == 1:
                 fade_in(tolvl2_img, 2, 0, 0)
                 fade_out(tolvl2_img, 2, 0, 0)
+                hp = 3
+                exp = 0
                 tolvl2 = 0
             for i in pg.event.get():
                 LEVEL2()
@@ -553,6 +570,8 @@ while run:
             if tolvl3 == 1:
                 fade_in(tolvl3_img, 2, 0, 0)
                 fade_out(tolvl3_img, 2, 0, 0)
+                hp = 3
+                exp = 0
                 tolvl3 = 0
             for i in pg.event.get():
                 LEVEL3()
@@ -560,6 +579,9 @@ while run:
             drawWindow()
         elif level == 4:
             sc.blit(winscreen, (0, 0))
+            man.update(time_delta)
+            man.draw_ui(sc)
+            pg.display.update()
             for i in pg.event.get():
                 WIN()
         '''ПОМОГИТЕ КНОПКУ ВЫХОДА СДЕЛАТЬ КОВШ!!!'''
