@@ -277,9 +277,7 @@ def pause( ):
         for i in pg.event.get():
             if i.type == pg.QUIT:
                 quit()
-            if i.type == pg.KEYDOWN:
-                if i.key == pg.K_ESCAPE:
-                    pause = not pause
+
 
             if i.type == pg.MOUSEBUTTONDOWN:
                 if exit_button.rect.collidepoint(i.pos):
