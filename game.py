@@ -7,17 +7,17 @@ pg.init()
 
 pg.time.set_timer(pg.USEREVENT, 10000)
 clock = pg.time.Clock()
-#создаем таймеры
+# создаем таймеры
 
 sc = pg.display.set_mode((620, 620))
 pg.display.set_caption("КАЛЬЯННЫЙ ГОНЩИК: ВОЗМЕЗДИЕ")
-#разрешение окна и заголовок окна
+# разрешение окна и заголовок окна
 
 icon = pg.image.load('logoblack.png')
 pg.display.set_icon(icon)
-#логотип
+# логотип
 
-BAD_COOMARS = ('sprites/Bad_Coomar/1.png','sprites/Bad_Coomar/2.png',)
+BAD_COOMARS = ('sprites/Bad_Coomar/1.png', 'sprites/Bad_Coomar/2.png',)
 BAD_COOMARS_NEW = [pg.transform.scale(pg.image.load(i), (300, 150)) for i in BAD_COOMARS]
 
 BAD_APPLES = ('sprites/Bad_Apple/1.png', 'sprites/Bad_Apple/2.png',
@@ -40,14 +40,13 @@ HOOKAH_NEW = [pg.transform.scale(pg.image.load(i), (200, 200)) for i in HOOKAH]
 
 HOOKAH_LEFT = pg.transform.scale(pg.image.load('sprites/Hookah/left.png'), (200, 200))
 HOOKAH_RIGHT = pg.transform.scale(pg.image.load('sprites/Hookah/right.png'), (200, 200))
-#работа со спрайтами
+# работа со спрайтами
 
 bg = pg.image.load('bg1.jpg')
 bg = pg.transform.scale(bg, (620, 620))
 logo = pg.image.load('logo.png')
 logo = pg.transform.scale(logo, (300, 300))
 logomini = logo.copy()
-
 
 bg_music = pg.mixer.Sound('sounds/bg1.mp3')
 menu_music = pg.mixer.Sound('sounds/menu.mp3')
@@ -62,7 +61,7 @@ hit_sound.set_volume(0.9)
 exp_sound.set_volume(0.9)
 heal_sound.set_volume(0.9)
 lose.set_volume(0.9)
-#работа со звуками
+# работа со звуками
 
 
 x = 220
@@ -71,7 +70,7 @@ width = 30
 height = 30
 speed = 2
 level = 1
-#базовые характеристики игрока
+# базовые характеристики игрока
 
 left = False
 right = False
@@ -88,7 +87,8 @@ exp_image = pg.image.load('sprites/HP_and_EXP/exp.png')
 exp_name = pg.image.load('sprites/HP_and_EXP/expname.png')
 exp_bg_image = pg.image.load('sprites/HP_and_EXP/expbg.png')
 
-#инициализация характеристик для очков здоровья и опыта
+
+# инициализация характеристик для очков здоровья и опыта
 
 def HealthBar():
     sc.blit(hp_bg_image, (10, 0))
@@ -100,7 +100,8 @@ def HealthBar():
         x += 50
         show += 1
 
-#функция полоски здоровья
+
+# функция полоски здоровья
 
 def control():
     global left
@@ -129,7 +130,8 @@ def control():
     if keys[pg.K_ESCAPE]:
         pause()
 
-#функция управления
+
+# функция управления
 
 
 def ExpBar():
@@ -142,7 +144,8 @@ def ExpBar():
         x += 50
         show += 1
 
-#функция полоски опыта
+
+# функция полоски опыта
 
 
 def BgAnimation():
@@ -154,7 +157,8 @@ def BgAnimation():
     if bg_y == 620:
         bg_y = 0
 
-#функция анимации заднего фона
+
+# функция анимации заднего фона
 
 def drawWindow():
     global animCount
@@ -173,7 +177,7 @@ def drawWindow():
     else:
         sc.blit(HOOKAH_NEW[animCount // 5], (x, y))
         animCount += 1
-    #условия анимирования
+    # условия анимирования
 
     HOOKAH_rect = pg.Rect(x + 65, y + 45, 60, 75)
     # exp = 0
@@ -221,7 +225,7 @@ def drawWindow():
             hp -= 1
             if hp == 0:
                 Alive = False
-    #циклы отслеживания соприкосновений
+    # циклы отслеживания соприкосновений
     heal_apples.draw(sc)
     exp_apples.draw(sc)
     bad_apples.draw(sc)
@@ -231,7 +235,9 @@ def drawWindow():
     ExpBar()
 
     pg.display.update()
-#функция рисования объектов
+
+
+# функция рисования объектов
 
 
 # инциализуруем переменные для pg_gui и вводим кнопки нашего меню
@@ -251,16 +257,16 @@ def draw_text(text, font, text_col, x, y):
     img = font.render(text, False, text_col)
     sc.blit(img, (x, y))
 
-#функция вывода текста
 
-def pause( ):
-    transparent = pg.Surface((620,620))
+# функция вывода текста
+
+def pause():
+    transparent = pg.Surface((620, 620))
     transparent.set_alpha(60)
 
-
-    #переход
+    # переход
     for i in range(7):
-        sc.blit(transparent,(0,0))
+        sc.blit(transparent, (0, 0))
         pg.display.flip()
         pg.time.wait(30)
 
@@ -278,13 +284,11 @@ def pause( ):
             if i.type == pg.QUIT:
                 quit()
 
-
             if i.type == pg.MOUSEBUTTONDOWN:
                 if exit_button.rect.collidepoint(i.pos):
                     quit()
                 if hello_button.rect.collidepoint(i.pos):
                     pause = not pause
-
 
             manager.process_events(i)
         manager.update(time_delta2)
@@ -292,9 +296,12 @@ def pause( ):
         draw_text('ПАУЗА', font, (255, 255, 255), 70, 280)
         pg.display.update()
 
-#функция паузы
+
+# функция паузы
 
 lose_img = pg.image.load('loseimg.png')
+
+
 # экран проигрыша
 def losewindow():
     global Alive
@@ -364,7 +371,7 @@ def fade_in(surface, fade_speed, x, y):  # Функция для плавног�
         clock.tick(60)
 
 
-fade_in(logo, 1, 150, 150) #появление логотипа
+fade_in(logo, 1, 150, 150)  # появление логотипа
 fade_out(logo, 6, 150, 150)  # затухание логотипа вначале (поверхность, скорость изменения альфа, координаты х у)
 
 sc.blit(bg, (0, 0))  # (фон для менюшки, лого в нижнем углу и текст)
@@ -460,11 +467,12 @@ class BadApple(pg.sprite.Sprite):
             # теперь не перебрасываем вверх, а удаляем из всех групп
             self.kill()
 
+
 heal_apples = pg.sprite.Group()
 exp_apples = pg.sprite.Group()
 bad_apples = pg.sprite.Group()
 
-#классы врагов
+# классы врагов
 
 bg_y = 0
 bad_timer = pg.USEREVENT + 1
@@ -482,13 +490,13 @@ tolvl3_img = pg.image.load('tolvl3.png')
 winscreen = pg.image.load('winscreen.png')
 tolvl1 = tolvl2 = tolvl3 = 1
 
-#экраны перехода
+# экраны перехода
 
 man = pg_gui.UIManager((620, 620))
 
 exit_button3 = pg_gui.elements.UIButton(relative_rect=pg.Rect((235, 325), (175, 50)),
-                                                    text='ПРОЩАЙ, КАЛИК!',
-                                                    manager=man)
+                                        text='ПРОЩАЙ, КАЛИК!',
+                                        manager=man)
 
 
 def LEVEL1():
@@ -501,6 +509,7 @@ def LEVEL1():
     elif i.type == green_timer:
         ExpApple(randrange(106, 533, 205), GREEN_APPLES_NEW, exp_apples)
 
+
 def LEVEL2():
     if i.type == pg.QUIT:
         pg.quit()
@@ -510,6 +519,7 @@ def LEVEL2():
         ExpApple(randrange(106, 533, 205), GREEN_APPLES_NEW, exp_apples)
     elif i.type == red_timer:
         HealApple(randrange(106, 533, 205), RED_APPLES_NEW, heal_apples)
+
 
 def LEVEL3():
     if i.type == pg.QUIT:
@@ -521,7 +531,8 @@ def LEVEL3():
     elif i.type == red_timer:
         HealApple(randrange(106, 533, 205), RED_APPLES_NEW, heal_apples)
 
-#функции спавна врагов
+
+# функции спавна врагов
 
 def WIN():
     if i.type == pg.QUIT:
@@ -575,6 +586,10 @@ while run:
             man.draw_ui(sc)
             pg.display.update()
             for i in pg.event.get():
+                bg_music.stop()
+                win = pg.mixer.Sound('sounds/win.mp3')
+                win.play(-1)
+                win.set_volume(0.5)
                 WIN()
 
     else:
@@ -586,5 +601,3 @@ while run:
     clock.tick(60)
     heal_apples.update()
     exp_apples.update()
-    bad_coomars.update()
-
