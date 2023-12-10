@@ -7,6 +7,7 @@ pg.init()
 
 pg.time.set_timer(pg.USEREVENT, 10000)
 clock = pg.time.Clock()
+
 # создаем таймеры
 
 sc = pg.display.set_mode((620, 620))
@@ -16,6 +17,14 @@ pg.display.set_caption("КАЛЬЯННЫЙ ГОНЩИК: ВОЗМЕЗДИЕ")
 icon = pg.image.load('logoblack.png')
 pg.display.set_icon(icon)
 # логотип
+
+
+sc = pg.display.set_mode((620, 620))
+pg.display.set_caption("КАЛЬЯННЫЙ ГОНЩИК: ВОЗМЕЗДИЕ")
+
+icon = pg.image.load('logoblack.png')
+pg.display.set_icon(icon)
+
 
 BAD_COOMARS = ('sprites/Bad_Coomar/1.png', 'sprites/Bad_Coomar/2.png',)
 BAD_COOMARS_NEW = [pg.transform.scale(pg.image.load(i), (300, 150)) for i in BAD_COOMARS]
@@ -40,7 +49,9 @@ HOOKAH_NEW = [pg.transform.scale(pg.image.load(i), (200, 200)) for i in HOOKAH]
 
 HOOKAH_LEFT = pg.transform.scale(pg.image.load('sprites/Hookah/left.png'), (200, 200))
 HOOKAH_RIGHT = pg.transform.scale(pg.image.load('sprites/Hookah/right.png'), (200, 200))
+
 # работа со спрайтами
+
 
 bg = pg.image.load('bg1.jpg')
 bg = pg.transform.scale(bg, (620, 620))
@@ -61,7 +72,6 @@ hit_sound.set_volume(0.9)
 exp_sound.set_volume(0.9)
 heal_sound.set_volume(0.9)
 lose.set_volume(0.9)
-# работа со звуками
 
 
 x = 220
@@ -70,7 +80,8 @@ width = 30
 height = 30
 speed = 2
 level = 1
-# базовые характеристики игрока
+
+# базовые характеристики игро
 
 left = False
 right = False
@@ -88,7 +99,9 @@ exp_name = pg.image.load('sprites/HP_and_EXP/expname.png')
 exp_bg_image = pg.image.load('sprites/HP_and_EXP/expbg.png')
 
 
+
 # инициализация характеристик для очков здоровья и опыта
+
 
 def HealthBar():
     sc.blit(hp_bg_image, (10, 0))
@@ -102,6 +115,7 @@ def HealthBar():
 
 
 # функция полоски здоровья
+
 
 def control():
     global left
@@ -130,7 +144,6 @@ def control():
     if keys[pg.K_ESCAPE]:
         pause()
 
-
 # функция управления
 
 
@@ -145,7 +158,9 @@ def ExpBar():
         show += 1
 
 
+
 # функция полоски опыта
+    # Движение заднего фона
 
 
 def BgAnimation():
@@ -158,7 +173,9 @@ def BgAnimation():
         bg_y = 0
 
 
+
 # функция анимации заднего фона
+
 
 def drawWindow():
     global animCount
@@ -177,7 +194,9 @@ def drawWindow():
     else:
         sc.blit(HOOKAH_NEW[animCount // 5], (x, y))
         animCount += 1
+
     # условия анимирования
+
 
     HOOKAH_rect = pg.Rect(x + 65, y + 45, 60, 75)
     # exp = 0
@@ -225,7 +244,8 @@ def drawWindow():
             hp -= 1
             if hp == 0:
                 Alive = False
-    # циклы отслеживания соприкосновений
+
+    # циклы отслеживания соприкосновени
     heal_apples.draw(sc)
     exp_apples.draw(sc)
     bad_apples.draw(sc)
@@ -237,7 +257,9 @@ def drawWindow():
     pg.display.update()
 
 
-# функция рисования объектов
+
+# функция рисования объекто
+
 
 
 # инциализуруем переменные для pg_gui и вводим кнопки нашего меню
@@ -297,13 +319,15 @@ def pause():
         pg.display.update()
 
 
+
 # функция паузы
+
 
 lose_img = pg.image.load('loseimg.png')
 
 
 # экран проигрыша
-def losewindow():
+def losewindow():  # доделать функцию
     global Alive
     global hp
     global exp
@@ -371,7 +395,11 @@ def fade_in(surface, fade_speed, x, y):  # Функция для плавног�
         clock.tick(60)
 
 
+
 fade_in(logo, 1, 150, 150)  # появление логотипа
+
+fade_in(logo, 1, 150, 150)
+
 fade_out(logo, 6, 150, 150)  # затухание логотипа вначале (поверхность, скорость изменения альфа, координаты х у)
 
 sc.blit(bg, (0, 0))  # (фон для менюшки, лого в нижнем углу и текст)
@@ -466,20 +494,46 @@ class BadApple(pg.sprite.Sprite):
         else:
             # теперь не перебрасываем вверх, а удаляем из всех групп
             self.kill()
+class BadCoomar(pg.sprite.Sprite):
+    def __init__(self, x, surf, group):
+        pg.sprite.Sprite.__init__(self)
+        self.images = surf.copy()
+        self.cur = 0
+        self.image = self.images[self.cur]
+        self.rect = self.image.get_rect(center=(x, 0))
+        # добавляем в группу
+        self.add(group)
+        # у машин будет разная скорость
+        self.speed = 2
 
+
+    def update(self):
+        self.cur = (self.cur + 1) % len(self.images)
+        self.image = self.images[self.cur]
+        if self.rect.y < 620:
+            self.rect.y += self.speed
+        else:
+            # теперь не перебрасываем вверх, а удаляем из всех групп
+            self.kill()
+
+bad_coomars = pg.sprite.Group()
 
 heal_apples = pg.sprite.Group()
 exp_apples = pg.sprite.Group()
 bad_apples = pg.sprite.Group()
 
+
 # классы врагов
+
 
 bg_y = 0
 bad_timer = pg.USEREVENT + 1
 red_timer = bad_timer + 100  # xd
 very_bad_timer = bad_timer + 100  # xd
+bad_coom_timer = bad_timer + 1
 green_timer = bad_timer + 1000  # xd
 pg.time.set_timer(very_bad_timer, 10000)
+pg.time.set_timer(bad_coom_timer, 2000)
 pg.time.set_timer(bad_timer, 2500)  # частота появления гнилых яблок
 pg.time.set_timer(red_timer, 8000)  # частота появления красных яблок
 pg.time.set_timer(green_timer, 10000)  # частота появления зеленых яблок
@@ -490,7 +544,6 @@ tolvl3_img = pg.image.load('tolvl3.png')
 winscreen = pg.image.load('winscreen.png')
 tolvl1 = tolvl2 = tolvl3 = 1
 
-# экраны перехода
 
 man = pg_gui.UIManager((620, 620))
 
@@ -513,6 +566,8 @@ def LEVEL1():
 def LEVEL2():
     if i.type == pg.QUIT:
         pg.quit()
+    # elif i.type == bad_coom_timer:
+    #     BadCoomar(randrange(106, 320, 205), BAD_COOMARS_NEW, bad_coomars)
     elif i.type == very_bad_timer:
         BadApple(randrange(106, 533, 205), BAD_APPLES_NEW, bad_apples)
     elif i.type == green_timer:
@@ -532,14 +587,14 @@ def LEVEL3():
         HealApple(randrange(106, 533, 205), RED_APPLES_NEW, heal_apples)
 
 
-# функции спавна врагов
-
 def WIN():
     if i.type == pg.QUIT:
         pg.quit()
     if i.type == pg.MOUSEBUTTONDOWN:
         if exit_button3.rect.collidepoint(i.pos):
             quit()
+
+
 
 
 Alive = True
@@ -591,6 +646,7 @@ while run:
                 win.play(-1)
                 win.set_volume(0.5)
                 WIN()
+        '''ПОМОГИТЕ КНОПКУ ВЫХОДА СДЕЛАТЬ КОВШ!!!'''
 
     else:
         # level = 1
@@ -601,3 +657,7 @@ while run:
     clock.tick(60)
     heal_apples.update()
     exp_apples.update()
+
+    bad_coomars.update()
+    bad_apples.update()
+
